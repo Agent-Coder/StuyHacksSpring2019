@@ -27,4 +27,11 @@ class Ship extends GameObject{
     baseMat = nMat;
   }
   
+  public boolean isDead() {
+    if (health <= 0) {
+      return true;
+    }
+    return false;
+  }
+  
 }
