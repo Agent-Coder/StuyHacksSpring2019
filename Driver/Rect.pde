@@ -7,6 +7,12 @@ class Rect {
     this.botRight = botRight.copy();
   }
   
+  public Rect(Rect r, PVector offset) {
+    this(r);
+    this.topLeft.add(offset);
+    this.botRight.add(offset);
+  }
+  
   public Rect(Rect r) {
     this.topLeft = r.topLeft.copy();
     this.botRight = r.botRight.copy();
@@ -25,7 +31,7 @@ class Rect {
   }
   
   public float height() {
-    return topLeft.y - botRight.y;
+    return botRight.y - topLeft.y;
   }
   
   public boolean collides(Rect r) {

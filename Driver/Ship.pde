@@ -9,6 +9,7 @@ class Ship extends GameObject{
     mainBody = new MainBody(this, position, velocity, maxVelocity, acceleration, new Rect[] {
       new Rect(new PVector(0, 0), new PVector(100, 100))
     }, 20, 1, 0);
+    components.add(mainBody);
   }
   
   public void setEnemyShip(Ship s) {
@@ -27,11 +28,14 @@ class Ship extends GameObject{
   }
   
   public void display(float secsPassed, float dt) {
+    pushMatrix();
+    translate(getPosition().x, getPosition().y);
     for (int i = 0; i < components.size(); i++) {
       Component c = components.get(i);
       
       c.display(secsPassed, dt);
     }
+    popMatrix();
   }
   
   public List<Component> getComponents() {
