@@ -20,4 +20,11 @@ class Ship extends GameObject{
     health += dH;
   }
   
+  public String getMat() {
+    return baseMat;
+  }
+  public void setMat(String nMat) {
+    baseMat = nMat;
+  }
+  
 }
