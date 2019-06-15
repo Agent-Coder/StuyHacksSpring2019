@@ -1,5 +1,6 @@
 class Ship extends GameObject{
   private List<Component> components;
+  private MainBody mainBody;
   private Ship enemyShip;
   private float health;
   private String baseMat;
@@ -9,6 +10,7 @@ class Ship extends GameObject{
     health = nH;
     baseMat = nMat;
     components = new ArrayList<Component>();
+    mainBody = new MainBody(position, velocity, maxVelocity, acceleration, nH, 1);
   }
   
   public void setEnemyShip(Ship s) {
@@ -35,7 +37,7 @@ class Ship extends GameObject{
   }
   
   public boolean isDead() {
-    if (health <= 0) {
+    if (health <= 0 || mainBody.getHealth() <= 0) {
       return true;
     }
     return false;
