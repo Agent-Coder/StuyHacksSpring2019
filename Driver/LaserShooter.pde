@@ -2,11 +2,13 @@ class LaserShooter extends Component{
   float accuracy; //theta
   float attack;
   Laser laser;
+  int frames;
   
   public LaserShooter(Ship ship, PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitBoxes, float health, float coolDown, float accuracy, float attack) {
     super(ship, position, velocity, maxVelocity, acceleration, hitBoxes, health, coolDown);
     this.accuracy = accuracy;
     this.attack = attack;
+    laser = null;
   }
   
   void use() {
@@ -27,8 +29,16 @@ class LaserShooter extends Component{
       float theta = random(0,accuracy);
       if ((int) random(2) == 0) theta *= -1;
       PVector shootVec = new PVector (cos(theta)*(enemyPos.x-getPosition().x), sin(theta)*(enemyPos.y-getPosition().y));
-      if (laser == null) laser = new Laser(getPosition(),shootVec, 100);
+      if (frames >= 0) {
+        laser = new Laser(getPosition(),shootVec, 100);
+        frames--;
+      }
     }
+  }
+  
+  void display(float secsPassed, float dt){
+    fill(255,0,0);
+    rect(getPosition().x, getPosition().y,40,20);
   }
   
   void reset() {
