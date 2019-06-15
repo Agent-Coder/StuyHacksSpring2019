@@ -24,5 +24,6 @@ class Shield extends Component {
   };
 
  public void display(float secsPassed, float dt){
+   
   }
 }

@@ -13,6 +13,7 @@ class Ship extends GameObject{
     }, 20, 1, 0);
     fuel = nFuel;
     timeSinceFuelRanOut = 0;
+    components.add(mainBody);
   }
   
   public void setEnemyShip(Ship s) {
@@ -36,10 +37,13 @@ class Ship extends GameObject{
   }
   
   public void display(float secsPassed, float dt) {
+    pushMatrix();
+    translate(getPosition().x, getPosition().y);
     for (int i = 0; i < components.size(); i++) {
       Component c = components.get(i);
       c.display(secsPassed, dt);
     }
+    popMatrix();
   }
   
   public List<Component> getComponents() {
