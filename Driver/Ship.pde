@@ -2,12 +2,14 @@ class Ship extends GameObject{
   List<Component> components;
   float health;
   String baseMat; //material
+  int crew; //num of crew members
   
-  public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, float nH, String mat) {
+  public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, float nH, String mat, int numCrew) {
     super(position, velocity, maxVelocity, acceleration);
     components = new ArrayList<Component>();
     health = nH;
     baseMat = mat;
+    crew = numCrew;
   }
   
   public void setHealth(float nH) {
@@ -32,6 +34,13 @@ class Ship extends GameObject{
       return true;
     }
     return false;
+  }
+  
+  public int numCrewMembers() {
+    return crew;
+  }
+  public void addHealth() {
+    
   }
   
 }
