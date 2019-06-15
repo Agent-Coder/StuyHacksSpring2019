@@ -18,6 +18,9 @@ class Shield extends Component {
   //health is gonna be one third of mutation factor
   public void update(float secsPassed, float dt){
   }
+  public void reset(){
+    setBaseHealth(getBaseHealth());
+  };
 
 
 }
