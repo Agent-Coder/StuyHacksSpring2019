@@ -29,4 +29,16 @@ class Ship extends GameObject{
       c.display(secsPassed, dt);
     }
   }
+  
+  public List<Component> getComponents() {
+    return components;
+  }
+  
+  public void addComponent(Component c) {
+    components.add(c);
+  }
+  
+  public void removeComponent(Component c) {
+    components.remove(c);
+  }
 }
