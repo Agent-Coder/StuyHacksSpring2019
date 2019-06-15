@@ -25,23 +25,5 @@ abstract class Component extends GameObject{
     this.health += dHealth;
   }
   
-  public float getCoolDown() {
-    return coolDown;
-  }
-  
-  public void setCoolDown(float coolDown) {
-    this.coolDown = coolDown;
-  }
-  
-  public void addCoolDown(float dCoolDown) {
-    this.coolDown += dCoolDown;
-  }
-  
-  public void setShip(Ship s) {
-    this.ship = s;
-  }
-  
-  public Ship getShip() {
-    return ship;
-  }
+
 }
