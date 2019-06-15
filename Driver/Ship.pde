@@ -2,13 +2,17 @@ class Ship extends GameObject{
   private List<Component> components;
   private MainBody mainBody;
   private Ship enemyShip;
+  private float fuel;
+  private float timeSinceFuelRanOut;
   
-  public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration) {
+  public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, float nFuel) {
     super(position, velocity, maxVelocity, acceleration, new Rect[0]);
     components = new ArrayList<Component>();
     mainBody = new MainBody(this, position, velocity, maxVelocity, acceleration, new Rect[] {
       new Rect(new PVector(0, 0), new PVector(100, 100))
     }, 20, 1, 0);
+    fuel = nFuel;
+    timeSinceFuelRanOut = 0;
   }
   
   public void setEnemyShip(Ship s) {
@@ -24,12 +28,16 @@ class Ship extends GameObject{
       
       c.update(secsPassed, dt);
     }
+    if (fuel >= 0) {
+      
+    } else {
+      
+    }
   }
   
   public void display(float secsPassed, float dt) {
     for (int i = 0; i < components.size(); i++) {
       Component c = components.get(i);
-      
       c.display(secsPassed, dt);
     }
   }
