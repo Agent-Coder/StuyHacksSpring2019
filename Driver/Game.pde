@@ -22,8 +22,12 @@ class Game {
     nextGameState = gameState;
   }
   
-  void buttonPressed(String buttonText) {
+  void buttonPressedOnce(String buttonText) { //sends signal when first pressed
     println("Button " + buttonText + " was pressed.");
+  }
+  
+  void buttonPressed(String buttonText) { //sends signal while pressed
+    
   }
 
   void drawGrid(float xOff, float yOff, float x2Off, float y2Off) {

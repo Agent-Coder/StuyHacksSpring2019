@@ -6,6 +6,8 @@ public class Button extends GameObject {
   private float tSize;
 
   private color tintColor = color(255, 255, 255);
+  
+  private boolean lastPressed;
 
   public Button(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitboxes, String text, float tSize, String buttonName) {
     super(position, velocity, maxVelocity, acceleration, hitboxes);
@@ -20,7 +22,12 @@ public class Button extends GameObject {
       if (mousePressed) {
         tintColor = color(195, 195, 195);
         g.buttonPressed(buttonName);
+        if (!lastPressed) {
+          g.buttonPressedOnce(buttonName);
+        }
+        lastPressed = true;
       } else {
+        lastPressed = false;
         tintColor = color(225, 225, 225);
       }
     } else {
