@@ -12,7 +12,26 @@ class Rect {
     this.botRight = r.botRight.copy();
   }
   
+  public float x() {
+    return topLeft.x;
+  }
+  
+  public float y() {
+    return topLeft.y;
+  }
+  
+  public float width() {
+    return botRight.x - topLeft.x;
+  }
+  
+  public float height() {
+    return topLeft.y - botRight.y;
+  }
+  
   public boolean collides(Rect r) {
+    Rect r1 = this;
+    Rect r2 = r;
+    
     return false;
   }
 }
