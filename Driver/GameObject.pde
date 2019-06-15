@@ -19,7 +19,11 @@ abstract class GameObject {
   
   public abstract void update(float secsPassed, float dt);
   public abstract void display(float secsPassed, float dt);
-
+  
+  public Rect[] getHitBoxes() {
+    return hitboxes;
+  }
+  
   public PVector getPosition() {
     return position.copy();
   }

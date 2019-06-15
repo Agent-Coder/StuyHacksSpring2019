@@ -6,7 +6,9 @@ class Ship extends GameObject{
   public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration) {
     super(position, velocity, maxVelocity, acceleration, new Rect[0]);
     components = new ArrayList<Component>();
-    mainBody = new MainBody(this, position, velocity, maxVelocity, acceleration, new Rect[0], 20, 1, 0);
+    mainBody = new MainBody(this, position, velocity, maxVelocity, acceleration, new Rect[] {
+      new Rect(new PVector(0, 0), new PVector(100, 100))
+    }, 20, 1, 0);
   }
   
   public void setEnemyShip(Ship s) {
