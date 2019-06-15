@@ -13,8 +13,8 @@ class Ship extends GameObject{
       new Rect(new PVector(0, 0), new PVector(100, 100))
     }, 20, 1, 0);
     components.add(mainBody);
-    LaserShooter l = new LaserShooter(this, new PVector(0, 0),new PVector(0, 0),new PVector(0, 0),new PVector(0, 0),new Rect[]{new Rect(new PVector(0, 0), new PVector(100, 100))},100,5,20,100);
-    components.add(l);
+    //LaserShooter l = new LaserShooter(this, new PVector(100, 0),new PVector(0, 0),new PVector(0, 0),new PVector(0, 0),new Rect[]{new Rect(new PVector(0, 0), new PVector(100, 100))},100,5,20,100);
+    //components.add(l);
   }
   
   public void setEnemyShip(Ship s) {

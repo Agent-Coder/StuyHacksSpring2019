@@ -20,10 +20,9 @@ class Game {
     buttons[1] = new Button(new PVector(160, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Shield", 32, "shield");
     buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew", 32, "crew");
     buttons[3] = new Button(new PVector(width-100, height-90), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(80, 80))}, "Next", 32, "Go");
-    gameState = "editor";
 
-    ships[0] = new Ship(new PVector(width/3, height/2), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
-    ships[1] = new Ship(new PVector(2*width/3, height/2), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
+    ships[0] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
+    ships[1] = new Ship(new PVector(500, 500), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
     ships[0].setEnemyShip(ships[1]);
     ships[1].setEnemyShip(ships[0]);
 
@@ -35,7 +34,7 @@ class Game {
 
     world = new World(3);
 
-    gameState = "game";
+    gameState = "editor";
     nextGameState = gameState;
     selected="";
   }
@@ -70,7 +69,7 @@ class Game {
 
   boolean shadowGrid(Ship s) {
     fill(200, 200, 200);
-    Rect gridBounds = new Rect(new PVector(0, 100), new PVector(width-20, height - 120));
+    Rect gridBounds = new Rect(new PVector(-1, 99), new PVector(width+1, height - 99));
 
     float x = round(mouseX/gridSize)*gridSize;
     float y = round(mouseY/gridSize)*gridSize;
@@ -107,7 +106,8 @@ class Game {
     //}
 
     List<Component> comp=ship.getComponents();
-    println(comp.size());
+    //println(comp.size());
+    //println(comp);
     boolean placeable=mouse.collides(gridBounds) && newComp != null;
     if (placeable) {
       for (Component c : comp) {
@@ -116,7 +116,8 @@ class Game {
           //  //println(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition())));
           //  //println();
           //}
-          if (c != newComp && new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition())).collides(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition())))) {
+          println(gridBounds.contains(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()))));
+          if (c != newComp && new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition())).collides(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()))) || !gridBounds.contains(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition())))) {
             placeable = false;
           }
         }
@@ -125,8 +126,10 @@ class Game {
 
     //println(s.getComponents().get(s.getComponents().size()-1));
     //println(newComp);
+    //println(placeable);
     if (s.getComponents().get(s.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
       s.getComponents().remove(s.getComponents().size()-1);
+      newComp = null;
     }
 
     //if (placeable) {

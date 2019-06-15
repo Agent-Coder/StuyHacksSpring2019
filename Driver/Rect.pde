@@ -41,6 +41,13 @@ class Rect {
     return r1.x() < r2.x() + r2.width() && r1.x() + r1.width() > r2.x() && r1.y() < r2.y() + r2.height() && r1.y() + r1.height() > r2.y();
   }
   
+  public boolean contains(Rect r) {
+    PVector p1 = r.topLeft;
+    PVector p2 = r.botRight;
+    
+    return collides(new Rect(p1, p1)) && collides(new Rect(p2, p2));
+  }
+  
   public String toString() {
     return "TL: " + topLeft + "; BR" + botRight;
   }

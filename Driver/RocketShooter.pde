@@ -1,5 +1,5 @@
 class RocketShooter extends Component {
-  float attack
+  float attack;
   PVector rocketVel;
   public RocketShooter(Ship ship, PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitBoxes, float health, float coolDown, float attack, PVector rockVel) {
     super(ship, position, velocity, maxVelocity, acceleration, hitBoxes, health, coolDown);
