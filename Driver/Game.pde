@@ -1,18 +1,19 @@
 public Rect mouse;
+public Ship[] ships;
+public World world;
 
 class Game {
 
-  private Ship[] ships;
   private Button[] buttons;
   private String gameState;
   private String nextGameState;
   private String selected;
   private int gridSize = 20;
 
+  LaserShooter l;
+
   public Game() {
     ships = new Ship[2];
-    ships[0] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
-    ships[1] = new Ship(new PVector(500, 500), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
 
     buttons = new Button[4];
     buttons[0] = new Button(new PVector(10, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Laser", 32, "laser");
@@ -20,6 +21,21 @@ class Game {
     buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew", 32, "crew");
     buttons[3] = new Button(new PVector(width-100, height-90), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(80, 80))}, "Next", 32, "Go");
     gameState = "editor";
+
+    ships[0] = new Ship(new PVector(width/3, height/2), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
+    ships[1] = new Ship(new PVector(2*width/3, height/2), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
+    ships[0].setEnemyShip(ships[1]);
+    ships[1].setEnemyShip(ships[0]);
+
+    buttons = new Button[3];
+    buttons[0] = new Button(new PVector(10, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Laser", 32, "laser");
+    buttons[1] = new Button(new PVector(160, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Shield", 32, "shield");
+    buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew", 32, "crew");
+    //buttons[3] = new Button(new PVector(300, 0), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(100, 100))}, "Las", 32, "laser");
+
+    world = new World(3);
+
+    gameState = "game";
     nextGameState = gameState;
     selected="";
   }
@@ -58,7 +74,7 @@ class Game {
 
     float x = round(mouseX/gridSize)*gridSize;
     float y = round(mouseY/gridSize)*gridSize;
-        
+
     //println(s.getComponents());
 
     if (newComp == null) {
@@ -96,16 +112,17 @@ class Game {
     if (placeable) {
       for (Component c : comp) {
         if (c != newComp) {
-        //  //println(new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition())));
-        //  //println(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition())));
-        //  //println();
-        //}
-        if (c != newComp && new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition())).collides(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition())))) {
-          placeable = false;
+          //  //println(new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition())));
+          //  //println(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition())));
+          //  //println();
+          //}
+          if (c != newComp && new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition())).collides(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition())))) {
+            placeable = false;
+          }
         }
       }
     }
-    
+
     //println(s.getComponents().get(s.getComponents().size()-1));
     //println(newComp);
     if (s.getComponents().get(s.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
@@ -161,6 +178,8 @@ class Game {
       ships[0].display(secsRunning, dt);
     } else if (gameState.equals("game")) {
       background(255);
+      world.update(secsRunning, dt);
+      world.display(secsRunning, dt);
       for (Ship ship : ships) {
         ship.update(secsRunning, dt);
       }
@@ -171,6 +190,8 @@ class Game {
     } else {
       background(255);
       fill(255);
+      l.update(secsRunning, dt);
+      l.display(secsRunning, dt);
       text("You messed up lmao", width/2, height/2);
     }
     gameState = nextGameState;
