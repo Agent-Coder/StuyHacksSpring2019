@@ -30,10 +30,17 @@ class Ship extends GameObject{
       c.update(secsPassed, dt);
     }
     if (fuel >= 0) {
-      
+      fuel -= 1; //TEMP
     } else {
-      
+      if (timeSinceFuelRanOut == 0) {
+        setAcceleration(new PVector(-5, -5));
+      } else if (timeSinceFuelRanOut <= 5) {
+        setAcceleration(new PVector(dt, dt)); //TEMP
+        timeSinceFuelRanOut += dt;
+      }
     }
+    applyAcceleration();
+    applyVelocity();
   }
   
   public void display(float secsPassed, float dt) {

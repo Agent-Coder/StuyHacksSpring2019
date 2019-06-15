@@ -58,4 +58,12 @@ abstract class GameObject {
   public void applyVelocity() {
     position.add(velocity);
   }
+  
+  public void setMaxVelocity(PVector vel) {
+    maxVelocity = vel.copy();
+  }
+  
+  public PVector getMaxVelocity() {
+    return maxVelocity.copy();
+  }
 }
