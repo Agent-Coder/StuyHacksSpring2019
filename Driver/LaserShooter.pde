@@ -29,7 +29,7 @@ class LaserShooter extends Component {
       float theta = random(0, accuracy);
       if ((int) random(2) == 0) theta *= -1;
       PVector shootVec = new PVector (cos(theta)*(enemyPos.x-getPosition().x), sin(theta)*(enemyPos.y-getPosition().y));
-      laser = new Laser(getPosition(), shootVec, 100);
+      laser = new Laser(getPosition(), shootVec, 100, getShip());
       frames--;
     }
   }
@@ -52,12 +52,14 @@ class LaserShooter extends Component {
 
 class Laser {
   PVector start, end;
+  Ship ship;
 
-  Laser(PVector start, PVector direction, float laserLength) {
+  Laser(PVector start, PVector direction, float laserLength, Ship s) {
     this.start = start.copy();
     PVector directionNormal = direction.copy().normalize();
     directionNormal.mult(laserLength);
     end = PVector.add(start, directionNormal);
+    ship = s;
   }
 
   void display() {
