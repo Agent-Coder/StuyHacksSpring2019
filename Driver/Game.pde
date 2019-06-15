@@ -41,7 +41,6 @@ class Game {
     }
     newComp = null;
   }
-
   void buttonPressed(String buttonText) { //sends signal while pressed
   }
 
@@ -94,61 +93,40 @@ class Game {
         newComp.setPosition(new PVector(x, y).sub(s.getPosition()));
       }
     }
-
-    //if (newComp != null) {
-    //  s.addComponent(newComp);
-    //}
-
+        
     List<Component> comp=ship.getComponents();
-    //println(comp.size());
-    //println(comp);
     boolean placeable=mouse.collides(gridBounds) && newComp != null;
     if (placeable) {
+      boolean tangent = false;
       for (Component c : comp) {
         if (c != newComp) {
-          //  //println(new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition())));
-          //  //println(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition())));
-          //  //println();
-          //}
-          println(gridBounds.contains(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()))));
-          if (c != newComp && new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition())).collides(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()))) || !gridBounds.contains(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition())))) {
+          //println(gridBounds.contains(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()))));
+          
+          Rect cTranslated = new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition()));
+          Rect newTranslated = new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()));
+                    
+          if (cTranslated.getIntersectPoints(newTranslated) >= 2) {
+            tangent = true;
+          }
+          
+          if (c != newComp && cTranslated.collides(newTranslated) || !gridBounds.contains(newTranslated)) {
             placeable = false;
           }
         }
       }
+      if(mousePressed && tangent){
+        newComp=null;
+        selected="";
+      }
     }
-
-    //println(s.getComponents().get(s.getComponents().size()-1));
-    //println(newComp);
-    //println(placeable);
     if (s.getComponents().get(s.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
       s.getComponents().remove(s.getComponents().size()-1);
       newComp = null;
     }
-
-    //if (placeable) {
-    //  if (selected.equals("laser")) {
-    //    ship[0].addComponent(LaserShooter);
-    //  }
-    //}
-
-    //if (mousePressed && placeable) {
-    //  placeOnGrid();
-    //}
-
     fill(0, 0, 0);
     return false;
   }
-  //void placeOnGrid(float x, float y) {
 
-
-
-  //  if (selected.equals("laser")) {
-  //    rect(round(a, b, 40, 20));
-  //  } else if (selected.equals("shield")) {
-  //    rect(round(mouseX/gridSize)*gridSize, round(mouseY/gridSize)*gridSize, 40, 40);
-  //  }
-  //}
   public void update(float secsRunning, float dt) {
 
     mouse = new Rect(new PVector(mouseX, mouseY), new PVector(mouseX, mouseY));
@@ -164,12 +142,6 @@ class Game {
       for (Button b : buttons) {
         b.display(secsRunning, dt);
       }
-      //if (shadowGrid(ships[0])) {
-      //  placeOnGrid();
-      //}
-      //for (Ship ship : ships) {
-      //  ship.display(secsRunning, dt);
-      //}
       ship = ships[0];
       shadowGrid(ships[0]);
       ships[0].display(secsRunning, dt);
