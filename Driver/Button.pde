@@ -1,5 +1,3 @@
-public Rect mouse;
-
 public class Button extends GameObject {
   private String buttonName;
   private String text;
@@ -15,9 +13,7 @@ public class Button extends GameObject {
     this.text = text;
     this.tSize = tSize;
   }
-
   public void update(float secs, float dt) {
-    mouse = new Rect(new PVector(mouseX, mouseY), new PVector(mouseX, mouseY));
     if (mouseOver()) {
       if (mousePressed) {
         tintColor = color(195, 195, 195);
