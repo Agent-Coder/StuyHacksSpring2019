@@ -34,9 +34,8 @@ class Ship extends GameObject{
       timeSinceFuelRanOut = 0;
     } else {
       if (timeSinceFuelRanOut == 0) {
-        //setVelocity(getPosition().sub(getClosestFuel().getPosition()));
-        //setVelocity(getVelocity.div(-1 * getVelocity().mag()));
-        setAcceleration(new PVector(-5, -5));
+        //setAcceleration(getClosestFuel().getPosition().sub(getPosition()).getPosition());
+        //setAcceleration(getAcceleration.normalize()); //TEMP
       } else if (timeSinceFuelRanOut <= 5) {
         setAcceleration(new PVector(dt, dt)); //TEMP
         timeSinceFuelRanOut += dt;
@@ -81,6 +80,7 @@ class Ship extends GameObject{
         closestFuel = f;
       }
     }
+    return closestFuel;
   }
   */
 }
