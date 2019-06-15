@@ -8,12 +8,17 @@ class Ship extends GameObject{
   public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, float nFuel) {
     super(position, velocity, maxVelocity, acceleration, new Rect[0]);
     components = new ArrayList<Component>();
-    mainBody = new MainBody(this, position, velocity, maxVelocity, acceleration, new Rect[] {
+    //mainBody = new MainBody(this, position, velocity, maxVelocity, acceleration, new Rect[] {
+    //  new Rect(new PVector(0, 0), new PVector(100, 100))
+    //}, 20, 1, 0);
+    mainBody = new MainBody(this, new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
       new Rect(new PVector(0, 0), new PVector(100, 100))
     }, 20, 1, 0);
     fuel = nFuel;
     timeSinceFuelRanOut = 0;
     components.add(mainBody);
+    LaserShooter l = new LaserShooter(this, new PVector(0, 0),new PVector(0, 0),new PVector(0, 0),new PVector(0, 0),new Rect[]{new Rect(new PVector(0, 0), new PVector(100, 100))},100,5,20,100);
+    components.add(l);
   }
   
   public void setEnemyShip(Ship s) {
