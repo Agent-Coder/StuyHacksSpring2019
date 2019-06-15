@@ -3,11 +3,17 @@ public class MainBody extends Component{
   float baseHealth;
   float baseCoolDown;
   
+<<<<<<< HEAD
   public MainBody(Ship ship, PVector p, PVector v, PVector mV, PVector a, Rect[] hBoxes, float nH, float bH, float bCD, float cD, int mat) {
     super(ship, p, v, mV, a, hBoxes, nH, cD);
     baseMat = mat; //it can be 0, 1, 2, 3, 4
     baseCoolDown = bCD;
     baseHealth = bH;
+=======
+  public MainBody(Ship ship, PVector p, PVector v, PVector mV, PVector a, Rect[] hBoxes, float nH, float cD, int mat) {
+    super(ship, p, v, mV, a, hBoxes, nH, cD);
+    baseMat = mat; //it can be 0, 1, 2, 3, 4
+>>>>>>> GameClas
   }
   
   public void use() {

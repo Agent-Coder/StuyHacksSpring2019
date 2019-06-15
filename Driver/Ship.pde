@@ -5,10 +5,8 @@ class Ship extends GameObject{
   
   public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration) {
     super(position, velocity, maxVelocity, acceleration, new Rect[0]);
-    health = nH;
-    baseMat = nMat;
     components = new ArrayList<Component>();
-    mainBody = new MainBody(position, velocity, maxVelocity, acceleration, nH, 1);
+    mainBody = new MainBody(this, position, velocity, maxVelocity, acceleration, new Rect[0], 20, 1, 0);
   }
   
   public void setEnemyShip(Ship s) {
@@ -32,5 +30,17 @@ class Ship extends GameObject{
       
       c.display(secsPassed, dt);
     }
+  }
+  
+  public List<Component> getComponents() {
+    return components;
+  }
+  
+  public void addComponent(Component c) {
+    components.add(c);
+  }
+  
+  public void removeComponent(Component c) {
+    components.remove(c);
   }
 }
