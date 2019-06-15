@@ -12,15 +12,17 @@ class Shield extends Component {
   public void use(){   
   };
   public void mutate(float mutationFactor) {
+    mutationFactor=abs(mutationFactor);
     defense=(1+mutationFactor)*defense;
-    setBaseHealth(mutationFactor/3);
+    setBaseHealth(getBaseHealth()+mutationFactor/3);
   }
   //health is gonna be one third of mutation factor
   public void update(float secsPassed, float dt){
   }
   public void reset(){
-    setBaseHealth(getBaseHealth());
+    setHealth(getBaseHealth());
   };
 
-
+ public void display(float secsPassed, float dt){
+  }
 }
