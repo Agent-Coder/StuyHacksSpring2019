@@ -21,20 +21,14 @@ class Game {
     buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew", 32, "crew");
     buttons[3] = new Button(new PVector(width-100, height-90), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(80, 80))}, "Next", 32, "Go");
 
-    ships[0] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
-    ships[1] = new Ship(new PVector(500, 500), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
+    ships[0] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0), 1);
+    ships[1] = new Ship(new PVector(500, 500), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0), 1);
     ships[0].setEnemyShip(ships[1]);
     ships[1].setEnemyShip(ships[0]);
 
-    buttons = new Button[3];
-    buttons[0] = new Button(new PVector(10, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Laser", 32, "laser");
-    buttons[1] = new Button(new PVector(160, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Shield", 32, "shield");
-    buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew", 32, "crew");
-    //buttons[3] = new Button(new PVector(300, 0), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(100, 100))}, "Las", 32, "laser");
-
     world = new World(3);
 
-    gameState = "editor";
+    gameState = "game";
     nextGameState = gameState;
     selected="";
   }

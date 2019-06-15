@@ -1,6 +1,6 @@
 class Ship extends GameObject{
   private List<Component> components;
-  private MainBody mainBody;
+  public MainBody mainBody;
   private Ship enemyShip;
   private float fuel;
   private float timeSinceFuelRanOut;
@@ -35,11 +35,18 @@ class Ship extends GameObject{
       c.update(secsPassed, dt);
     }
     if (fuel >= 0) {
-      fuel -= 0.05 * dt; //TEMP]
+      fuel -= 0.1 * dt; //TEMP]
     } else {
-      Fuel closest = getClosestFuel().copy();
+      Fuel closest = getClosestFuel();
       PVector target = closest.getPosition().sub(getPosition());
-      setAcceleration(target.normalize()); //TEMP)
+      setAcceleration(target.normalize()); //TEMP
+      for (int i = 0; i < components.size(); i++) {
+        Rect hB = components.get(i).getHitBoxes()[0];
+        if (hB.collides(closest.getHitBoxes()[0])) {
+          println("didit");
+          world.getFuels().remove(closest);
+        }
+      }
     }
     applyAcceleration();
     applyVelocity();
@@ -73,7 +80,8 @@ class Ship extends GameObject{
     Fuel closestFuel = null;
     for (int i = 0; i < allFuel.size(); i++) {
       Fuel f = allFuel.get(i);
-      float dist = getPosition().dist(f.getPosition());
+      PVector center = getPosition().add(mainBody.getHitBoxes()[0].width() / 2, mainBody.getHitBoxes()[0].height() / 2);
+      float dist = center.dist(f.getPosition());
       if (dist < closestDist) {
         closestDist = dist;
         closestFuel = f;
