@@ -1,6 +1,8 @@
+public Ship[] ships;
+public World world;
+
 class Game {
 
-  private Ship[] ships;
   private Button[] buttons;
   private String gameState;
   private String nextGameState;
@@ -21,8 +23,10 @@ class Game {
     buttons[1] = new Button(new PVector(160, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Shield", 32, "shield");
     buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew", 32, "crew");
     //buttons[3] = new Button(new PVector(300, 0), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(100, 100))}, "Las", 32, "laser");
-
-    gameState = "editor";
+    
+    world = new World(3);
+    
+    gameState = "game";
     nextGameState = gameState;
   }
   
@@ -60,6 +64,8 @@ class Game {
       }
     } else if (gameState.equals("game")) {
       background(255);
+      world.update(secsRunning, dt);
+      world.display(secsRunning, dt);
       for (Ship ship : ships) {
         ship.update(secsRunning, dt);
       }
