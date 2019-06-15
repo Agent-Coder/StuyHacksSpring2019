@@ -7,6 +7,11 @@ class Rect {
     this.botRight = botRight.copy();
   }
   
+  public Rect(Rect r) {
+    this.topLeft = r.topLeft.copy();
+    this.botRight = r.botRight.copy();
+  }
+  
   public boolean collides(Rect r) {
     return false;
   }

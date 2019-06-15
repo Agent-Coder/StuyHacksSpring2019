@@ -1,23 +1,30 @@
 class Ship extends GameObject{
-  List<Component> components;
-  float health;
-  String baseMat; //material
-  int crew; //num of crew members
+  private List<Component> components;
+  private Ship enemyShip;
+  private float health;
+  private String baseMat;
   
-  public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration) {
-    super(position, velocity, maxVelocity, acceleration);
-    components = new ArrayList<Component>();
-    health = 0;
-  }
-  
-  public void setHealth(float nH) {
+  public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, float nH, String nMat) {
+    super(position, velocity, maxVelocity, acceleration, new Rect[0]);
     health = nH;
+    baseMat = nMat;
+    components = new ArrayList<Component>();
   }
-  public float getHealth() {
-    return health;
+  
+  public void setEnemyShip(Ship s) {
+    this.enemyShip = s;
   }
-  public void addHealth(float dH) {
-    health += dH;
+  
+  public Ship getEnemyShip() {
+    return enemyShip;
+  }
+  
+  public void updateHealth() {
+    float nH = 0;
+    for (int i = 0; i < components.size(); i++) {
+      nH += components.get(i).getHealth();
+    }
+    health = nH;
   }
   
   public String getMat() {
@@ -33,12 +40,4 @@ class Ship extends GameObject{
     }
     return false;
   }
-  
-  public int numCrewMembers() {
-    return crew;
-  }
-  public void addHealth() {
-    
-  }
-  
 }
