@@ -32,6 +32,6 @@ class Rect {
     Rect r1 = this;
     Rect r2 = r;
     
-    return false;
+    return r1.x() < r2.x() + r2.width() && r1.x() + r1.width() > r2.x() && r1.y() < r2.y() + r2.height() && r1.y() + r1.height() > r2.y();
   }
 }

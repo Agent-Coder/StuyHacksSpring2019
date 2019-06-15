@@ -6,12 +6,12 @@ abstract class Component extends GameObject{
   private float baseCoolDown;
   
   private Ship ship;
-  public Component(Ship ship, PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitBoxes, float health, float baseHealth, float coolDown, float baseCoolDown) {
+  public Component(Ship ship, PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitBoxes, float health, float coolDown) {
     super(position, velocity, maxVelocity, acceleration, hitBoxes);
     this.health = health;
-    this.baseHealth = baseHealth;
+    this.baseHealth = health;
     this.coolDown = coolDown;
-    this.baseCoolDown = baseCoolDown;
+    this.baseCoolDown = coolDown;
     this.ship = ship;
   }
   
