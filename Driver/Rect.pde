@@ -25,7 +25,7 @@ class Rect {
   }
   
   public float height() {
-    return topLeft.y - botRight.y;
+    return botRight.y - topLeft.y;
   }
   
   public boolean collides(Rect r) {
