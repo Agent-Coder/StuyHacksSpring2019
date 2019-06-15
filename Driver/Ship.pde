@@ -13,4 +13,20 @@ class Ship extends GameObject{
   public Ship getEnemyShip() {
     return enemyShip;
   }
+  
+  public void update(float secsPassed, float dt) {
+    for (int i = 0; i < components.size(); i++) {
+      Component c = components.get(i);
+      
+      c.update(secsPassed, dt);
+    }
+  }
+  
+  public void display(float secsPassed, float dt) {
+    for (int i = 0; i < components.size(); i++) {
+      Component c = components.get(i);
+      
+      c.display(secsPassed, dt);
+    }
+  }
 }

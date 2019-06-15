@@ -15,7 +15,6 @@ abstract class Component extends GameObject{
     this.ship = ship;
   }
   
-  public abstract void use();
   public abstract void mutate(float mutationFactor);
   public abstract void reset();
   
