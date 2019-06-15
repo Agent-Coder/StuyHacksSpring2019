@@ -4,7 +4,7 @@ class Game {
   private String gameState;
   private String nextGameState;
 
-  private int gridSize = 50;
+  private int gridSize = 20;
 
   public Game() {
     ships = new Ship[2];
@@ -15,15 +15,15 @@ class Game {
     nextGameState = gameState;
   }
 
-  void drawGrid() {
-    int x = 0;
-    while (x < width) {
-      line(x, 0, x, height);
+  void drawGrid(float xOff, float yOff, float x2Off, float y2Off) {
+    float x = xOff;
+    while (x <= x2Off) {
+      line(x, yOff, x, y2Off);
       x += gridSize;
     }
-    int y = 0;
-    while (y < height) {
-      line(0, y, width, y);
+    float y = yOff;
+    while (y <= y2Off) {
+      line(xOff, y, x2Off, y);
       y += gridSize;
     }
   }
@@ -32,7 +32,7 @@ class Game {
     if (gameState.equals("menu")) {
     } else if (gameState.equals("editor")) {
       background(255);
-      drawGrid();
+      drawGrid(0, 100, width - 100, height);
     } else if (gameState.equals("game")) {
       background(255);
       for (Ship ship : ships) {
