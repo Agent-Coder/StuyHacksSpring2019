@@ -9,6 +9,7 @@ class LaserShooter extends Component{
     this.accuracy = accuracy;
     this.attack = attack;
     laser = null;
+    frames = 0;
   }
   
   void use() {
@@ -25,18 +26,21 @@ class LaserShooter extends Component{
     addCoolDown(-dt);
     if (getCoolDown() <= 0) {
       setCoolDown(getBaseCoolDown());
+      frames = 30;
+    }
+    if (frames >= 0) {
       PVector enemyPos = other.getPosition();
       float theta = random(0,accuracy);
       if ((int) random(2) == 0) theta *= -1;
-      PVector shootVec = new PVector (cos(theta)*(enemyPos.x-getPosition().x), sin(theta)*(enemyPos.y-getPosition().y));
-      if (frames >= 0) {
-        laser = new Laser(getPosition(),shootVec, 100);
-        frames--;
-      }
+       PVector shootVec = new PVector (cos(theta)*(enemyPos.x-getPosition().x), sin(theta)*(enemyPos.y-getPosition().y));
+      laser = new Laser(getPosition(),shootVec, 100);
+      frames--;
     }
   }
   
+  
   void display(float secsPassed, float dt){
+    laser.display();
     fill(255,0,0);
     rect(getPosition().x, getPosition().y,40,20);
   }
@@ -63,5 +67,7 @@ class Laser {
     stroke(255,102,102);
     strokeWeight(10);
     line(start.x,start.y,end.x,end.y);
+    strokeWeight(1);
+    stroke(0);
   }
 }

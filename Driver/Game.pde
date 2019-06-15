@@ -7,10 +7,14 @@ class Game {
 
   private int gridSize = 20;
 
+  LaserShooter l;
+
   public Game() {
     ships = new Ship[2];
     ships[0] = new Ship(new PVector(width/3, height/2), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
     ships[1] = new Ship(new PVector(2*width/3, height/2), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
+    ships[0].setEnemyShip(ships[1]);
+    ships[1].setEnemyShip(ships[0]);
     
     buttons = new Button[3];
     buttons[0] = new Button(new PVector(10, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Laser", 32, "laser");
@@ -66,6 +70,8 @@ class Game {
     } else {
       background(255);
       fill(255);
+      l.update(secsRunning, dt);
+      l.display(secsRunning, dt);
       text("You messed up lmao", width/2, height/2);
     }
     gameState = nextGameState;
