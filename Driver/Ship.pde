@@ -38,11 +38,11 @@ class Ship extends GameObject{
       fuel -= 0.05 * dt; //TEMP
       timeSinceFuelRanOut = 0;
     } else {
-      if (timeSinceFuelRanOut == 0) {
-        //setAcceleration(getClosestFuel().getPosition().sub(getPosition()).getPosition());
-        //setAcceleration(getAcceleration.normalize()); //TEMP
-      } else if (timeSinceFuelRanOut <= 5) {
-        setAcceleration(new PVector(dt, dt)); //TEMP
+      if (timeSinceFuelRanOut <= 5) {
+        Fuel closest = getClosestFuel().copy();
+        closest.getPosition().sub(getPosition());
+        setAcceleration(closest.getPosition());
+        setAcceleration(getAcceleration().normalize()); //TEMP
         timeSinceFuelRanOut += dt;
       }
     }
@@ -72,14 +72,13 @@ class Ship extends GameObject{
     components.remove(c);
   }
   
-  /*
   public Fuel getClosestFuel() {
-    ArrayList<Fuel> allFuel = fjdklsjflkds;
+    List<Fuel> allFuel = world.getFuels();
     float closestDist = 1000000;
-    Fuel closestFuel = new Fuel();
-    for (int i = 0; i < allFuel; i++) {
-      Fuel f = allFuel.get(i)
-      dist = sqrt(sq(f.getPosition().x - getPosition().x) + sq(f.getPosition().y - getPosition().y));
+    Fuel closestFuel = new Fuel(new PVector(0, 0));
+    for (int i = 0; i < allFuel.size(); i++) {
+      Fuel f = allFuel.get(i);
+      float dist = sqrt(sq(f.getPosition().x - getPosition().x) + sq(f.getPosition().y - getPosition().y));
       if (dist < closestDist) {
         closestDist = dist;
         closestFuel = f;
@@ -87,5 +86,4 @@ class Ship extends GameObject{
     }
     return closestFuel;
   }
-  */
 }

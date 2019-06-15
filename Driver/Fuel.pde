@@ -24,4 +24,8 @@ class Fuel extends GameObject {
       num += 25;
     }
   }
+  
+  public Fuel copy() {
+    return new Fuel(getPosition());
+  }
 }

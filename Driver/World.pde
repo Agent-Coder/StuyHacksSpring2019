@@ -10,6 +10,10 @@ class World {
     this.fuels = new ArrayList<Fuel>();
     this.baseFuelSpawnCoolDown = this.fuelSpawnCoolDown = fuelSpawnCoolDown;
   }
+  
+  public List<Fuel> getFuels() {
+    return fuels;
+  }
 
   public void update(float secs, float dt) {
     fuelSpawnCoolDown -= dt;
