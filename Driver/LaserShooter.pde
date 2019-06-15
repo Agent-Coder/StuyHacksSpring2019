@@ -12,10 +12,6 @@ class LaserShooter extends Component{
     frames = 0;
   }
   
-  void use() {
-    
-  }
-  
   void mutate(float mutationFactor){ //mutation factor is a percent in decimal form (?? what)
     accuracy -= abs(mutationFactor*3);
     attack += abs(mutationFactor*20);
@@ -46,7 +42,9 @@ class LaserShooter extends Component{
   }
   
   void reset() {
-    
+    setHealth(getBaseHealth());
+    laser = null;
+    frames = 0;
   }
 }
 

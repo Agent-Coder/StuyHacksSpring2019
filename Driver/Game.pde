@@ -22,7 +22,7 @@ class Game {
     buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew", 32, "crew");
     //buttons[3] = new Button(new PVector(300, 0), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(100, 100))}, "Las", 32, "laser");
 
-    gameState = "editor";
+    gameState = "builder";
     nextGameState = gameState;
   }
   
@@ -70,8 +70,8 @@ class Game {
     } else {
       background(255);
       fill(255);
-      l.update(secsRunning, dt);
-      l.display(secsRunning, dt);
+      //l.update(secsRunning, dt);
+      //l.display(secsRunning, dt);
       text("You messed up lmao", width/2, height/2);
     }
     gameState = nextGameState;
