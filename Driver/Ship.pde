@@ -170,6 +170,11 @@ class Ship extends GameObject {
     }
     textSize(10);
     text("Points: " + (int)(getPoints() * 100), 50, 50);
+    if (ships[0] == this) {
+      text("Player 1", 50, 60); 
+    } else {
+      text("Player 2", 50, 60);
+    }
     popMatrix();
   }
 

@@ -25,7 +25,7 @@ class Game {
     ships = new Ship[2];
     money=100;
     buttons = new Button[5];
-    buttons[0] = new Button(new PVector(10, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Laser\n$25", 25, "laser");
+    buttons[0] = new Button(new PVector(10, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Bullets\n$25", 25, "laser");
     buttons[1] = new Button(new PVector(160, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Shield\n$20", 25, "shield");
     buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew\n$10", 25, "crew");
     buttons[3] = new Button(new PVector(460, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Rocket\n$10", 25 , "rocket");
@@ -323,7 +323,7 @@ class Game {
     }
   }
   public void update(float secsRunning, float dt) {
-
+    int currentWinner = 2;
     mouse = new Rect(new PVector(mouseX, mouseY), new PVector(mouseX, mouseY));
     if (gameState.equals("menu")) {
       color col1 = color(255, 255, 240);
@@ -359,6 +359,7 @@ class Game {
       fill(0, 255, 255);
       rect(0, 600, 100, 100);
       fill(50, 180, 50);
+      textSize(32);
       text("$"+str(money), 50, height-50);
       for (Button b : buttons) {
         b.update(secsRunning, dt);
@@ -381,6 +382,13 @@ class Game {
         }
       } else {
         println(numLevels);
+        if (ships[0].isDead()) {
+          ships[1].incWins();
+          currentWinner = 1;
+        } else if (ships[1].isDead()){
+          ships[0].incWins();
+          currentWinner = 0;
+        }
         if (numLevels >= 9) {
           nextGameState = "end";
         } else {
@@ -392,9 +400,9 @@ class Game {
       background(255);
       textSize(50);
       fill(255, 200, 0);
-      text("Player 1 Won!", 175, 50);
+      text("Player " + (currentWinner) + " Won!", 175, 50);
       textSize(30);
-      text("5-4", 325, 100);
+      text(ships[0].getWins() + "-" + ships[1].getWins(), 325, 100);
       fill(10, 10, 200);
       text("Player 1 Mutations:", 20, 200);
       mutations(secsRunning, 0, mouse);
