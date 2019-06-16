@@ -63,6 +63,10 @@ class Ship extends GameObject {
     if (getPosition().dist(getEnemyShip().getPosition()) <= 200) {
       setAcceleration(new PVector(0, 0));
       setVelocity(new PVector(0, 0));
+      //PVector vec = getPosition().sub(getEnemyShip().getPosition()).normalize();
+      //vec.add(random(-.1, .1), random(-.1, .1));
+      //setAcceleration(vec.mult(.3));
+      //setVelocity(vec.mult(.3));
       setMaxVelocity( new PVector(2, 2));
     }
     if (mainBody.getHealth() <= 0.2) { //TEMP
