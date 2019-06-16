@@ -31,7 +31,9 @@ class Crew extends Component {
       } 
     }
   }
-  public void display(float secsPassed, float dt){
+  void display(float secsPassed, float dt) {
+    fill(0, 255, 0);
+    rect(getPosition().x, getPosition().y, 20, 20);
   }
   public void reset(){
     setHealth(getBaseHealth());

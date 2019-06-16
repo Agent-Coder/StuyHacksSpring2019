@@ -12,6 +12,10 @@ class World {
     this.baseFuelSpawnCoolDown = this.fuelSpawnCoolDown = fuelSpawnCoolDown;
     rockets = new ArrayList<Rocket>();
   }
+  
+  public List<Fuel> getFuels() {
+    return fuels;
+  }
 
   public void update(float secs, float dt) {
     fuelSpawnCoolDown -= dt;
@@ -31,7 +35,7 @@ class World {
     PVector pos;
     do {
       pos = new PVector(random(width), random(height));
-    } while (! (pos.dist(ships[0].getPosition()) > 80 && pos.dist(ships[1].getPosition()) > 80));
+    } while (!(pos.dist(ships[0].getPosition()) > 80 && pos.dist(ships[1].getPosition()) > 80));
     
     fuels.add(new Fuel(pos.copy()));
   }
