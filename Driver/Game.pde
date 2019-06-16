@@ -26,10 +26,10 @@ class Game {
     ships = new Ship[2];
     money=100;
     buttons = new Button[5];
-    buttons[0] = new Button(new PVector(10, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Laser", 32, "laser");
-    buttons[1] = new Button(new PVector(160, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Shield", 32, "shield");
-    buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew", 32, "crew");
-    buttons[3] = new Button(new PVector(460, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Rocket", 32, "rocket");
+    buttons[0] = new Button(new PVector(10, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Bullets\n$25", 25, "laser");
+    buttons[1] = new Button(new PVector(160, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Shield\n$20", 25, "shield");
+    buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew\n$10", 25, "crew");
+    buttons[3] = new Button(new PVector(460, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Rocket\n$10", 25 , "rocket");
     buttons[4] = new Button(new PVector(width-100, height-90), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(80, 80))}, "Next", 32, "Go");
 
     menuButtons = new Button[2];
@@ -157,7 +157,7 @@ class Game {
       if (selected.equals("laser")) {
         newComp = new LaserShooter(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 20))
-          }, 20, 1, 0, 1);
+          }, 3, 2, 1.0);
       } else if (selected.equals("shield")) {
         newComp = new Shield(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 40))
@@ -230,7 +230,7 @@ class Game {
       if (selected.equals("laser")) {
         newComp = new LaserShooter(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 20))
-          }, 20, 1, 0, 1);
+          }, 3, 2, 1.0);
       } else if (selected.equals("shield")) {
         newComp = new Shield(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 40))
@@ -365,7 +365,7 @@ class Game {
     }
   }
   public void update(float secsRunning, float dt) {
-
+    int currentWinner = 2;
     mouse = new Rect(new PVector(mouseX, mouseY), new PVector(mouseX, mouseY));
     if (gameState.equals("menu")) {
       color col1 = color(255, 255, 240);
@@ -401,6 +401,7 @@ class Game {
       fill(0, 255, 255);
       rect(0, 600, 100, 100);
       fill(50, 180, 50);
+      textSize(32);
       text("$"+str(money), 50, height-50);
       for (Button b : buttons) {
         b.update(secsRunning, dt);
@@ -422,7 +423,14 @@ class Game {
           ship.display(secsRunning, dt);
         }
       } else {
-        //println(numLevels);
+        println(numLevels);
+        if (ships[0].isDead()) {
+          ships[1].incWins();
+          currentWinner = 1;
+        } else if (ships[1].isDead()){
+          ships[0].incWins();
+          currentWinner = 0;
+        }
         if (numLevels >= 9) {
           nextGameState = "end";
         } else {
@@ -434,9 +442,9 @@ class Game {
       background(255);
       textSize(50);
       fill(255, 200, 0);
-      text("Player 1 Won!", 325, 50);
+      text("Player " + (currentWinner) + " Won!", 175, 50);
       textSize(30);
-      text((int)ships[0].getPoints()+"-"+(int)ships[1].getPoints(), 325, 100);
+      text(ships[0].getWins() + "-" + ships[1].getWins(), 325, 100);
       fill(10, 10, 200);
       text("Player"+mutationNum+"Mutations:", 175, 150);
       mutations(secsRunning, 0, mouse);
@@ -468,7 +476,7 @@ class Game {
         textContent = "This is the actual game field.\nWatch as your ship and the enemy\nship battle one another on the board.";
       } else if (page == 2) {
         header = "Mutation";
-        textContent = "After every round, both\nspaceships will mutate into something\nslightly different to make\nthe game more exciting!";
+        textContent = "After every round, both\nspaceships will mutate into\nsomethingslightly different to make\nthe game more exciting!";
       } else if (page == 3) {
         header = "Final Notes";
         textContent = "Whoever won the most rounds\nis the winner. Remember,\n HAVE FUN!";

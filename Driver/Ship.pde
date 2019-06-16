@@ -99,7 +99,7 @@ class Ship extends GameObject {
           }
         }
       }
-    } else if (getClosestPoint() != null && getPosition().dist(getClosestPoint().getPosition()) <= 100) {
+    } else if (getClosestPoint() != null && getPosition().dist(getClosestPoint().getPosition()) <= 200) {
       Point closest = getClosestPoint();
       if (closest != null) {
         PVector target = closest.getPosition().sub(getPosition());
@@ -167,6 +167,13 @@ class Ship extends GameObject {
       Component c = components.get(i);
       c.display(secsPassed, dt);
       c.displayHealth(secsPassed, dt);
+    }
+    textSize(10);
+    text("Points: " + (int)(getPoints() * 100), 50, 50);
+    if (ships[0] == this) {
+      text("Player 1", 50, 60); 
+    } else {
+      text("Player 2", 50, 60);
     }
     popMatrix();
   }

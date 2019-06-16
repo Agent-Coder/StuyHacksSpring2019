@@ -2,6 +2,7 @@ class World {
   private List<Fuel> fuels;
   private List<Point> points;
   private List<Rocket> rockets;
+  private List<Laser> lasers;
 
   private float fuelSpawnCoolDown;
   private float baseFuelSpawnCoolDown;
@@ -14,6 +15,7 @@ class World {
     this.points = new ArrayList<Point>();
     this.basePointSpawnCoolDown = this.pointSpawnCoolDown = pointSpawnCoolDown;
     this.rockets = new ArrayList<Rocket>();
+    this.lasers = new ArrayList<Laser>();
   }
 
   public List<Fuel> getFuels() {
@@ -24,6 +26,9 @@ class World {
   }
   public List<Rocket> getRockets() {
     return rockets;
+  }
+  public List<Laser> getLasers() {
+    return lasers;
   }
 
   public void update(float secs, float dt) {
@@ -61,6 +66,27 @@ class World {
         }
       }
     }
+    for (int i = lasers.size() - 1; i >= 0; i--) {
+      //println(rockets.size());
+      Laser r = lasers.get(i);
+      r.update(secs, dt);
+      boolean isDone = false;
+      for (int j = 0; j < r.getEnemy().getComponents().size() && !isDone; j++) {
+        Component c = r.getEnemy().getComponents().get(j);
+        Rect hC = c.getHitBoxes()[0];
+        Rect hR = r.getHitBoxes()[0];
+        Rect transHC = new Rect(hC, r.getEnemy().getPosition().add(c.getPosition()));
+        Rect transHR = new Rect(hR, r.getPosition());
+        if (transHC.collides(transHR)) {
+          c.addHealth(-1 * r.getDam());
+          world.getLaser().remove(r);
+          isDone = true;
+        }
+      }
+      if (r.getPosition().x <= -35 || r.getPosition().x >= width - 2 || r.getPosition().y <= 1 || r.getPosition().y >=width - 21) {
+        world.getLasers().remove(r);
+      }
+    }
   }
 
   public void display(float secs, float dt) {
@@ -72,6 +98,9 @@ class World {
     }
     for (Rocket rocket : rockets) {
       rocket.display(secs, dt);
+    }
+    for (Laser laser : lasers) {
+      laser.display(secs, dt);
     }
   }
 
