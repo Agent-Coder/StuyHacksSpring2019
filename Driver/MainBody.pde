@@ -31,6 +31,7 @@ public class MainBody extends Component {
 
   public void reset() {
     setHealth(baseHealth);
+    setCoolDown(baseCoolDown);
   }
 
   public void display(float secsPassed, float dt) {

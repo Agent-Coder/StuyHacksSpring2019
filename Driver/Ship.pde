@@ -22,6 +22,26 @@ class Ship extends GameObject {
     points = 0;
     wins = 0;
   }
+  
+  public void reset() {
+    points = 0;
+    fuel = 1;
+    
+    for (Component c : getComponents()) {
+      c.reset();
+    }
+    
+    mainBody.reset();
+    mainBody.setHealth(50);
+    world.fuels.clear();
+    world.points.clear();
+    world.rockets.clear();
+    world.lasers.clear();
+    
+    
+    
+    println("HEALTH: " + mainBody.getHealth());
+  }
 
   public Ship(Ship s) {
     super(s.getPosition(), s.getVelocity(), s.getMaxVelocity(), s.getAcceleration(), new Rect[0]);

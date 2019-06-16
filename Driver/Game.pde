@@ -114,6 +114,8 @@ class Game {
           roundTimer = 30;
           //println("wee");
           mutationNum = 0;
+          ships[0].reset();
+          ships[1].reset();
         }
         if (buttonText.equals("Select1")&&placed) {
           ships[mutationNum]=tempShips[0];
@@ -286,6 +288,7 @@ class Game {
         return true;
       }
     }
+    if (ship.getComponents().size() > 0)
     if (ship.getComponents().get(ship.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
       ship.getComponents().remove(ship.getComponents().size()-1);
       newComp = null;
@@ -428,7 +431,7 @@ class Game {
         }
       } else{
         roundTimer = 30;
-        println(numLevels);  
+        println(ships[0].isDead() + ", " + ships[1].isDead() + ", " + roundTimer);  
         if (ships[0].isDead()) {
           ships[1].incWins();
           currentWinner = 1;
