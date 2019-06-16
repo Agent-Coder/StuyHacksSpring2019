@@ -17,10 +17,6 @@ class Ship extends GameObject {
       }, 20, 1, 0);
     fuel = nFuel;
     components.add(mainBody);
-    components.add(
-      new RocketShooter(this, new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
-      new Rect(new PVector(0, 0), new PVector(20, 40))
-      }, 100, 5, 20));
     baseAcceleration = acceleration;
     points = 0;
   }
@@ -52,6 +48,7 @@ class Ship extends GameObject {
     return points;
   }
   public void update(float secsPassed, float dt) {
+    println(mainBody.getHealth());
     for (int i = 0; i < components.size(); i++) {
       Component c = components.get(i);
 
@@ -118,6 +115,22 @@ class Ship extends GameObject {
           if (transC.collides(transF)) {
             fuel += f.getFuelLevel();
             world.getFuels().remove(f);
+            isDone = true;
+          }
+        }
+      }
+      for (int i = 0; i < world.points.size() && !isDone; i++) {
+        for (int j = 0; j < components.size() && !isDone; j++) {
+          Point p = world.points.get(i);
+          Component c = components.get(j);
+          Rect hp = p.getHitBoxes()[0];
+          Rect hc = c.getHitBoxes()[0];
+
+          Rect transC = new Rect(hc, getPosition().add(c.getPosition()));
+          Rect transP = new Rect(hp, p.getPosition());
+          if (transC.collides(transP)) {
+            points += p.getPointLevel();
+            world.getFuels().remove(p);
             isDone = true;
           }
         }

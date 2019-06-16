@@ -15,40 +15,18 @@ class RocketShooter extends Component {
   
   void display(float secsPassed, float dt) {
     fill(32, 52, 204);
-    rect(getPosition().x, getPosition().y, 20, 40);
+    rect(getPosition().x, getPosition().y, 40, 20);
   }
   
   void update(float secsPassed, float dt){
     addCoolDown(-dt);
     if (getCoolDown() <= 0) {
+      println("hl");
       setCoolDown(getBaseCoolDown());
-      PVector rocketVel = new PVector(4, 0);
-      Rocket r = new Rocket(getPosition().add(getShip().getPosition()), rocketVel, rocketVel, getAcceleration(), new Rect[] {new Rect(new PVector(0, 0), new PVector(100, 100))}, getShip() );
+      PVector rocketVel = getShip().getEnemyShip().getPosition().sub(getPosition().add(getShip().getPosition()));
+      rocketVel.normalize().mult(4);
+      Rocket r = new Rocket(getPosition().add(getShip().getPosition()), rocketVel, rocketVel, rocketVel.normalize(), new Rect[] {new Rect(new PVector(0, 0), new PVector(40, 20))}, getShip(), attack);
       world.rockets.add(r);
     }
-  }
-}
-
-class Rocket extends GameObject{
-  Ship ship, enemy;
-  public Rocket(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitboxes, Ship s) {
-    super(position,velocity, maxVelocity, acceleration, hitboxes);
-    ship = s;
-    enemy = ship.getEnemyShip();
-  } 
-  
-  void update(float secsPassed, float dt){
-    setAcceleration(enemy.getPosition().sub(getPosition()));
-    applyAcceleration();
-    applyVelocity();
-  }
-  void display(float secsPassed, float dt){
-    pushMatrix();
-    translate(getPosition().x, getPosition().y);
-    rotate(getPosition().heading());
-    fill(32, 52, 204);
-    rectMode(CORNER);
-    rect(0, 0, getHitBoxes()[0].width(), getHitBoxes()[0].height(), getHitBoxes()[0].width() / 2, getHitBoxes()[0].height() / 2, 0, 0);
-    popMatrix();
   }
 }
