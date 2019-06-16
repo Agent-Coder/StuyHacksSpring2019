@@ -45,7 +45,10 @@ class LaserShooter extends Component {
     if (laser != null) {
       laser.display();
     }
-    fill(255, 0, 255);
+    int bVal = 153-26;
+    int gVal = 204-140;
+    float percent = (attack - 5)/ (30-5);
+    fill(255, 153- (percent*bVal), 204-(percent * gVal));
     rect(getPosition().x, getPosition().y, 40, 20);
   }
 

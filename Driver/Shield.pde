@@ -31,7 +31,11 @@ class Shield extends Component {
   };
 
  void display(float secsPassed, float dt) {
-    fill(255, 255, 0);
+    float percent = (defense-10)/(25);
+    int rVal = 255-230;
+    int bVal = 230-18;
+    int gVal = 128-40;
+    fill( 255- (percent*rVal), 230 - (percent * bVal), 128 - (percent * gVal));
     rect(getPosition().x, getPosition().y, 40, 40);
  }
 }
