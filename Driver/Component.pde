@@ -15,6 +15,15 @@ abstract class Component extends GameObject{
     this.ship = ship;
   }
   
+  public Component(Component c) {
+    super(c.getPosition(),c.getVelocity(), c.getMaxVelocity(), c.getAcceleration(), c.getHitBoxes());
+    this.health = c.health;
+    this.baseHealth = c.baseHealth;
+    
+    this.coolDown = c.coolDown;
+    this.baseCoolDown = c.coolDown;
+  }
+  
   public abstract void mutate(float mutationFactor);
   public abstract void reset();
   
