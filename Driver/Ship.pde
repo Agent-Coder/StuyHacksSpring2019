@@ -51,7 +51,29 @@ class Ship extends GameObject {
 
       c.update(secsPassed, dt);
     }
-    if (fuel >= 0) {
+    if (mainBody.getHealth() <= 0.2) { //TEMP
+      
+    } else if (fuel <= 0) {
+      setMaxVelocity( new PVector(1, 1));
+      Fuel closest = getClosestFuel();
+      if (closest != null) {
+        PVector target = closest.getPosition().sub(getPosition());
+        setAcceleration(target.normalize().mult(.2)); //TEMP
+        for (int i = 0; i < components.size(); i++) {
+          Rect hB = components.get(i).getHitBoxes()[0];
+          
+          Rect translatedB = new Rect(hB, getPosition().add(components.get(i).getPosition()));
+          Rect translatedClosest = new Rect(closest.getHitBoxes()[0], closest.getPosition());
+          if (translatedB.collides(translatedClosest)) {
+            fuel += closest.getFuelLevel();
+            setMaxVelocity(new PVector(2, 2));
+            world.getFuels().remove(closest);
+          }
+        }
+      }
+    } else if (getPosition().dist()) {
+      
+    } else {
       fuel -= 0.1 * dt; //TEMP]
       baseAcceleration = getAcceleration();
       setMaxVelocity( new PVector(2, 2));
@@ -69,24 +91,6 @@ class Ship extends GameObject {
             fuel += f.getFuelLevel();
             world.getFuels().remove(f);
             isDone = true;
-          }
-        }
-      }
-    } else {
-      setMaxVelocity( new PVector(1, 1));
-      Fuel closest = getClosestFuel();
-      if (closest != null) {
-        PVector target = closest.getPosition().sub(getPosition());
-        setAcceleration(target.normalize().mult(.2)); //TEMP
-        for (int i = 0; i < components.size(); i++) {
-          Rect hB = components.get(i).getHitBoxes()[0];
-          
-          Rect translatedB = new Rect(hB, getPosition().add(components.get(i).getPosition()));
-          Rect translatedClosest = new Rect(closest.getHitBoxes()[0], closest.getPosition());
-          if (translatedB.collides(translatedClosest)) {
-            fuel += closest.getFuelLevel();
-            setMaxVelocity(new PVector(2, 2));
-            world.getFuels().remove(closest);
           }
         }
       }
@@ -137,6 +141,8 @@ class Ship extends GameObject {
     }
     return closestFuel;
   }
+  
+  public P
   
   public Rect calcBound() {
     float minX = 0;

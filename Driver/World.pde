@@ -1,15 +1,20 @@
 class World {
   private List<Fuel> fuels;
+  private List<Point> points;
 
   //private List<Point> points;
 
   private float fuelSpawnCoolDown;
   private float baseFuelSpawnCoolDown;
+  private float pointSpawnCoolDown;
+  private float basePointSpawnCoolDown;
   ArrayList<Rocket> rockets;
 
-  public World(float fuelSpawnCoolDown) {
+  public World(float fuelSpawnCoolDown, float pointSpawnCoolDown) {
     this.fuels = new ArrayList<Fuel>();
     this.baseFuelSpawnCoolDown = this.fuelSpawnCoolDown = fuelSpawnCoolDown;
+    this.points = new ArrayList<Point>();
+    this.basePointSpawnCoolDown = this.pointSpawnCoolDown = pointSpawnCoolDown;
     rockets = new ArrayList<Rocket>();
   }
   
@@ -23,11 +28,18 @@ class World {
       fuelSpawnCoolDown = baseFuelSpawnCoolDown;
       genFuel();
     }
+    if (pointSpawnCoolDown <= 0) {
+      pointSpawnCoolDown = basePointSpawnCoolDown;
+      genPoint();
+    }
   }
   
   public void display(float secs, float dt) {
     for (Fuel fuel : fuels) {
       fuel.display(secs, dt);
+    }
+    for (Point point : points) {
+      point.display(secs, dt);
     }
   }
 
@@ -40,5 +52,12 @@ class World {
     fuels.add(new Fuel(pos.copy()));
   }
   
-  
+  void genPoint() {
+    PVector pos;
+    do {
+      pos = new PVector(random(width - 40) + 20, random(height - 40) + 20);
+    } while (!(pos.dist(ships[0].getPosition()) > 80 && pos.dist(ships[1].getPosition()) > 80));
+    
+    points.add(new Point(pos.copy()));
+  }
 }
