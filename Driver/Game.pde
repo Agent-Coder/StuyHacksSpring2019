@@ -44,7 +44,7 @@ class Game {
 
     world = new World(3, 1);
 
-    gameState = "menu";
+    gameState = "end";
     nextGameState = gameState;
     selected="";
 
@@ -451,10 +451,25 @@ class Game {
 
       textAlign(CORNER);
     } else if (gameState.equals("end")) {
+      background(255);
+      textAlign(CENTER);
+      if (ships[0].getWins() > ships[1].getWins()) {
+        fill(127);
+        textSize(50);
+        text("PLAYER ONE WON!!!", width/2, 130);
+      } else if (ships[0].getWins() < ships[1].getWins()) {
+        fill(127);
+        textSize(50);
+        text("PLAYER TWO WON!!!", width/2, 130);
+      } else {
+        fill(127);
+        textSize(50);
+        text("GAME ENDED IN DRAW", width/2, 130);
+      }
     } else {
       background(255);
       fill(255);
-      text("You messed up lmao", width/2, height/2);
+      text("We messed up lmao", width/2, height/2);
     }
     gameState = nextGameState;
   }

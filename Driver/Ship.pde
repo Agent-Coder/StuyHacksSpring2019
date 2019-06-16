@@ -5,6 +5,7 @@ class Ship extends GameObject {
   private float fuel;
   private PVector baseAcceleration;
   private float points;
+  private int wins;
 
   public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, float nFuel) {
     super(position, velocity, maxVelocity, acceleration, new Rect[0]);
@@ -19,6 +20,7 @@ class Ship extends GameObject {
     components.add(mainBody);
     baseAcceleration = acceleration;
     points = 0;
+    wins = 0;
   }
 
   public Ship(Ship s) {
@@ -34,6 +36,13 @@ class Ship extends GameObject {
 
 
     baseAcceleration = s.baseAcceleration;
+  }
+  
+  public void incWins() {
+    wins++;
+  }
+  public int getWins() {
+    return wins;
   }
 
   public void setEnemyShip(Ship s) {
