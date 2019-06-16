@@ -20,7 +20,7 @@ class Ship extends GameObject {
     timeSinceFuelRanOut = 0;
     components.add(mainBody);
     baseAcceleration = acceleration;
-    
+    boundaries = new Rect(new PVector(0, 0), new PVector(100, 100));
     //LaserShooter l = new LaserShooter(this, new PVector(100, 0),new PVector(0, 0),new PVector(0, 0),new PVector(0, 0),new Rect[]{new Rect(new PVector(0, 0), new PVector(100, 100))},100,5,20,100);
     //components.add(l);
   }

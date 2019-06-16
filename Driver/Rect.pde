@@ -33,6 +33,13 @@ class Rect {
   public float height() {
     return botRight.y - topLeft.y;
   }
+  
+  public void changeTopLeft(PVector change) {
+    topLeft = topLeft.add(change);
+  }
+  public void changeBotRight(PVector change) {
+    botRight = botRight.add(change);
+  }
 
   public boolean collides(Rect r) {
     Rect r1 = this;
