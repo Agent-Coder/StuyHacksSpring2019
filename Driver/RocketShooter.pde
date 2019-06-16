@@ -13,7 +13,9 @@ class RocketShooter extends Component {
     setHealth(getBaseHealth());
   }
   
-  void display(float secsPassed, float dt){
+  void display(float secsPassed, float dt) {
+    fill(32, 52, 204);
+    rect(getPosition().x, getPosition().y, 20, 40);
   }
   
   void update(float secsPassed, float dt){

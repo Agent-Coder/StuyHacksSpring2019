@@ -21,6 +21,9 @@ class World {
   public List<Fuel> getFuels() {
     return fuels;
   }
+  public List<Point> getPoints() {
+    return points;
+  }
 
   public void update(float secs, float dt) {
     fuelSpawnCoolDown -= dt;
@@ -28,6 +31,7 @@ class World {
       fuelSpawnCoolDown = baseFuelSpawnCoolDown;
       genFuel();
     }
+    pointSpawnCoolDown -= dt;
     if (pointSpawnCoolDown <= 0) {
       pointSpawnCoolDown = basePointSpawnCoolDown;
       genPoint();
@@ -46,7 +50,7 @@ class World {
   void genFuel() {
     PVector pos;
     do {
-      pos = new PVector(random(width - 40) + 20, random(height - 40) + 20);
+      pos = new PVector(random(width - 80) + 40, random(height - 80) + 40);
     } while (!(pos.dist(ships[0].getPosition()) > 80 && pos.dist(ships[1].getPosition()) > 80));
     
     fuels.add(new Fuel(pos.copy()));
@@ -55,7 +59,7 @@ class World {
   void genPoint() {
     PVector pos;
     do {
-      pos = new PVector(random(width - 40) + 20, random(height - 40) + 20);
+      pos = new PVector(random(width - 80) + 40, random(height - 80) + 40);
     } while (!(pos.dist(ships[0].getPosition()) > 80 && pos.dist(ships[1].getPosition()) > 80));
     
     points.add(new Point(pos.copy()));

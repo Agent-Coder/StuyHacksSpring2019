@@ -17,9 +17,9 @@ class Fuel extends GameObject {
   }
   
   public void display(float secs, float dt) {
-    int num = 127;
+    int num = 200;
     for (Rect hitbox : getHitBoxes()) {
-      fill(num);
+      fill(num, num, 0);
       rect(getPosition().x + hitbox.x(), getPosition().y + hitbox.y(), hitbox.width(), hitbox.height(), 5);
       num += 25;
     }

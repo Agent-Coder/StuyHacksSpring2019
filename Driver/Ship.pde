@@ -4,6 +4,7 @@ class Ship extends GameObject {
   private Ship enemyShip;
   private float fuel;
   private PVector baseAcceleration;
+  private float points;
 
   public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, float nFuel) {
     super(position, velocity, maxVelocity, acceleration, new Rect[0]);
@@ -17,24 +18,25 @@ class Ship extends GameObject {
     fuel = nFuel;
     components.add(mainBody);
     components.add(
-      new RocketShooter(this, new PVector(0,0), new PVector(0,0), new PVector(0,0), new PVector(0,0), new Rect[] {
-        new Rect(new PVector(0,0), new PVector(20,40))
-      }, 100,5,20));
+      new RocketShooter(this, new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
+      new Rect(new PVector(0, 0), new PVector(20, 40))
+      }, 100, 5, 20));
     baseAcceleration = acceleration;
+    points = 0;
   }
-  
+
   public Ship(Ship s) {
     super(s.getPosition(), s.getVelocity(), s.getMaxVelocity(), s.getAcceleration(), new Rect[0]);
     components = new ArrayList<Component>();
     mainBody = s.mainBody;
     fuel = s.fuel;
     enemyShip = s.enemyShip;
-    
+
     for (Component c : s.components) {
       components.add(c);
     }
-    
-    
+
+
     baseAcceleration = s.baseAcceleration;
   }
 
@@ -45,14 +47,25 @@ class Ship extends GameObject {
   public Ship getEnemyShip() {
     return enemyShip;
   }
+
+  public float getPoints() {
+    return points;
+  }
   public void update(float secsPassed, float dt) {
     for (int i = 0; i < components.size(); i++) {
       Component c = components.get(i);
 
       c.update(secsPassed, dt);
     }
+    if (fuel >= 0) {
+      fuel -= 0.1 * dt;
+      setMaxVelocity(new PVector(2, 2));
+    } else {
+      setMaxVelocity(new PVector(1, 1));
+    }
     if (mainBody.getHealth() <= 0.2) { //TEMP
-      
+      setAcceleration(getEnemyShip().getPosition().sub(getPosition()));
+      setAcceleration(getAcceleration().normalize().mult(-0.5));
     } else if (fuel <= 0) {
       setMaxVelocity( new PVector(1, 1));
       Fuel closest = getClosestFuel();
@@ -61,7 +74,7 @@ class Ship extends GameObject {
         setAcceleration(target.normalize().mult(.2)); //TEMP
         for (int i = 0; i < components.size(); i++) {
           Rect hB = components.get(i).getHitBoxes()[0];
-          
+
           Rect translatedB = new Rect(hB, getPosition().add(components.get(i).getPosition()));
           Rect translatedClosest = new Rect(closest.getHitBoxes()[0], closest.getPosition());
           if (translatedB.collides(translatedClosest)) {
@@ -71,20 +84,35 @@ class Ship extends GameObject {
           }
         }
       }
-    } else if (getPosition().dist()) {
-      
-    } else {
-      fuel -= 0.1 * dt; //TEMP]
-      baseAcceleration = getAcceleration();
+    } else if (getClosestPoint() != null && getPosition().dist(getClosestPoint().getPosition()) <= 100) {
+      Point closest = getClosestPoint();
+      if (closest != null) {
+        PVector target = closest.getPosition().sub(getPosition());
+        setAcceleration(target.normalize().mult(.2)); //TEMP
+        for (int i = 0; i < components.size(); i++) {
+          Rect hB = components.get(i).getHitBoxes()[0];
+
+          Rect translatedB = new Rect(hB, getPosition().add(components.get(i).getPosition()));
+          Rect translatedClosest = new Rect(closest.getHitBoxes()[0], closest.getPosition());
+          if (translatedB.collides(translatedClosest)) {
+            points += closest.getPointLevel();
+            setMaxVelocity(new PVector(2, 2));
+            world.getFuels().remove(closest);
+          }
+        }
+      }
+    } else if (getPosition().dist(getEnemyShip().getPosition()) >= 200) {
+      setAcceleration(getEnemyShip().getPosition().sub(getPosition()));
+      setAcceleration(getAcceleration().normalize().mult(0.5));
       setMaxVelocity( new PVector(2, 2));
       boolean isDone = false;
       for (int i = 0; i < world.fuels.size() && !isDone; i++) {
         for (int j = 0; j < components.size() && !isDone; j++) {
           Fuel f = world.fuels.get(i);
-          Component c = components.get(i);
+          Component c = components.get(j);
           Rect hf = f.getHitBoxes()[0];
           Rect hc = c.getHitBoxes()[0];
-          
+
           Rect transC = new Rect(hc, getPosition().add(c.getPosition()));
           Rect transF = new Rect(hf, f.getPosition());
           if (transC.collides(transF)) {
@@ -94,6 +122,10 @@ class Ship extends GameObject {
           }
         }
       }
+    } else if (getPosition().dist(getEnemyShip().getPosition()) <= 200) {
+      setAcceleration(new PVector(0, 0));
+      setVelocity(new PVector(0, 0));
+      setMaxVelocity( new PVector(2, 2));
     }
     reflect();
     applyAcceleration();
@@ -121,7 +153,7 @@ class Ship extends GameObject {
   public void removeComponent(Component c) {
     components.remove(c);
   }
-  
+
   public boolean isDead() {
     return mainBody.getHealth() <= 0;
   }
@@ -141,9 +173,23 @@ class Ship extends GameObject {
     }
     return closestFuel;
   }
-  
-  public P
-  
+
+  public Point getClosestPoint() {
+    List<Point> allPoint = world.getPoints();
+    float closestDist = Float.MAX_VALUE;
+    Point closestPoint = null;
+    for (int i = 0; i < allPoint.size(); i++) {
+      Point p = allPoint.get(i);
+      PVector center = getPosition().add(mainBody.getHitBoxes()[0].width() / 2, mainBody.getHitBoxes()[0].height() / 2);
+      float dist = center.dist(p.getPosition());
+      if (dist < closestDist) {
+        closestDist = dist;
+        closestPoint = p;
+      }
+    }
+    return closestPoint;
+  }
+
   public Rect calcBound() {
     float minX = 0;
     float minY = 0;
@@ -187,5 +233,25 @@ class Ship extends GameObject {
         setPosition(new PVector(getPosition().x, height - 2.01 - (bounds.height() + bounds.y())));
       }
     }
+  }
+
+  boolean collidingEnemy() {
+    for (int i = 0; i < components.size(); i++) {
+      for (int j = 0; j < getEnemyShip().getComponents().size(); j++) {
+        Component cC = components.get(i);
+        Component cE = getEnemyShip().getComponents().get(j);
+        Rect hC = cC.getHitBoxes()[0];
+        Rect hE = cE.getHitBoxes()[0];
+
+        Rect transHC = new Rect(hC, getPosition().add(cC.getPosition()));
+        Rect transHE = new Rect(hE, getEnemyShip().getPosition().add(cE.getPosition()));
+
+        if (transHC.collides(transHE)) {
+          println("yeay");
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
