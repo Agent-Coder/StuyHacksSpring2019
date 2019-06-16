@@ -44,6 +44,8 @@ class Game {
     gameFont = createFont("INVASION2000.TTF", 100);
     textFont(gameFont);
   }
+  
+  int page = 0;
 
   void buttonPressedOnce(String buttonText) { //sends signal when first pressed
     println("Button " + buttonText + " was pressed.");
@@ -57,7 +59,7 @@ class Game {
       if (buttonText.equals("play")) {
         nextGameState = "editor";
       } else if (buttonText.equals("guide")){
-        
+        nextGameState = "tutorial";
       }
     }
   }
@@ -102,7 +104,7 @@ class Game {
         newComp = new Crew(s, new PVector(x, y).sub(s.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(20, 20))
           });
-      }
+      }m
       if (newComp != null && mouse.collides(gridBounds)) {
         s.addComponent(newComp);
       }
@@ -205,6 +207,8 @@ class Game {
         ship.display(secsRunning, dt);
       }
     } else if (gameState.equals("mutating")) {
+    } else if (gameState.equals("tutorial")) {
+      
     } else {
       background(255);
       fill(255);
