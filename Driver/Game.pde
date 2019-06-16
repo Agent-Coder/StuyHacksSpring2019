@@ -36,9 +36,12 @@ class Game {
     menuButtons[0] = new Button(new PVector(width/2 - 180, height/2-100), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(360, 160))}, "Play", 100, "play");
     menuButtons[1] = new Button(new PVector(width/2 - 180, height/2+100), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(360, 130))}, "Guide", 100, "guide");
 
-    mutationButton=new Button[2];
-    mutationButton[0]=new Button(new PVector(60, 280), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(100, 20))}, "Undo", 14, "Undo");
-    mutationButton[1] = new Button(new PVector(width-100, height-90), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(80, 80))}, "Next", 28, "Go");
+    mutationButton=new Button[4];
+    mutationButton[0]=new Button(new PVector(160, 280), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(100, 20))}, "Undo", 14, "Undo");
+    mutationButton[1] = new Button(new PVector(width-100, height-90), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(80, 80))}, "Next", 28, "next");
+    mutationButton[2]=new Button(new PVector(140, 540), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(140, 80))}, "Select", 28, "Select1");
+    mutationButton[3] = new Button(new PVector(420, 540), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(140, 80))}, "Select", 28, "Select2");
+
 
     tutorialNext = new Button(new PVector(width - 125, height - 125), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(120, 120))}, "->", 100, "nextPage");
 
@@ -61,7 +64,9 @@ class Game {
 
   int page = 0;
   int finalPageIndex = 3;
-
+  
+  int mutationNum = 0;
+  
   void buttonPressedOnce(String buttonText) { //sends signal when first pressed
     println("Button " + buttonText + " was pressed.");
     if (gameState.equals("editor")) {
@@ -105,6 +110,17 @@ class Game {
         if (tempShips[0].getComponents().size()>startingSize) {
           placed=false;
           tempShips[0].getComponents().remove(tempShips[0].getComponents().size()-1);
+        }
+      }
+      if (buttonText.equals("next")) {
+        if (mutationNum > 0) {
+          nextGameState = "game";
+          mutationNum = 0;
+        }
+        if (buttonText.equals("Select1")&&placed) {
+          ships[mutationNum]=tempShips[0];
+        } else if (buttonText.equals("Select2")&&placed) {
+          ships[mutationNum] = tempShips[1];
         }
       }
     }
@@ -279,7 +295,7 @@ class Game {
     return false;
   }
 
-  Ship[] tempShips = new Ship[3];
+  Ship[] tempShips = new Ship[2];
   boolean otherFirstMut = true;
   boolean placed=false;
   int startingSize=0;
@@ -287,24 +303,19 @@ class Game {
   float mutationFac;
   boolean mutated=false;
   public void mutations(float secsRun, int shipnum, Rect mice) {
-    Rect choice1= new Rect(new PVector(-1, 299.0), new PVector( 221.0, 521.0));
-    Rect choice2= new Rect(new PVector(220.0, 280.0), new PVector( 480.0, 540.0));
-    Rect choice3= new Rect(new PVector(440.0, 280.0), new PVector( 720.0, 540.0));
-
+    Rect choice1= new Rect(new PVector(99, 299.0), new PVector( 321.0, 521.0));
+    Rect choice2= new Rect(new PVector(379, 299.0), new PVector( 601, 521));
     if (mice.collides(choice1)) {
       fill(100, 200, 200);
-      rect(0, 300, 220, 220);
+      rect(100, 300, 220, 220);
     } else if (mice.collides(choice2)) {
       fill(100, 200, 200);
-      rect(240, 300, 220, 220);
-    } else if (mice.collides(choice3)) {
-      fill(100, 200, 200);
-      rect(480, 300, 220, 220);
+      rect(380, 300, 220, 220);
     }
     fill(255, 255, 255);
-    drawGrid(0, 300, 220, 520);
-    drawGrid(240, 300, 460, 520);
-    drawGrid(480, 300, 700, 520);
+    drawGrid(100, 300, 320, 520);
+    drawGrid(380, 300, 600, 520);
+    //start and end  of tops of grid
 
     if (otherFirstMut) {
       otherFirstMut = false;
@@ -331,7 +342,7 @@ class Game {
 
     for (int i = 0; i < tempShips.length; i++) {
       Ship copy = tempShips[i];
-      copy.setPosition(new PVector(60.0 + i * 240, 360.0));
+      copy.setPosition(new PVector(160.0 + i * 280, 360.0));
       ship=copy;
       if (!placed&&i==0) {
         if (shape==0) {
@@ -345,6 +356,7 @@ class Game {
           placed=mutationAdd(choice1); //use arrays
         }
       } else if (i==1&&!mutated) {
+
         mutated=true;
         //println(upgrade);
         tempShips[i].getComponents().get(upgrade).mutate(mutationFac);
@@ -424,9 +436,9 @@ class Game {
       fill(255, 200, 0);
       text("Player 1 Won!", 325, 50);
       textSize(30);
-      text("5-4", 325, 100);
+      text((int)ships[0].getPoints()+"-"+(int)ships[1].getPoints(), 325, 100);
       fill(10, 10, 200);
-      text("Player 1 Mutations:", 175, 150);
+      text("Player"+mutationNum+"Mutations:", 175, 150);
       mutations(secsRunning, 0, mouse);
       for (Button b : mutationButton) {
         b.update(secsRunning, dt);
