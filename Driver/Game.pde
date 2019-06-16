@@ -451,10 +451,11 @@ class Game {
 
       textAlign(CORNER);
     } else if (gameState.equals("end")) {
+      
     } else {
       background(255);
       fill(255);
-      text("You messed up lmao", width/2, height/2);
+      text("We messed up lmao", width/2, height/2);
     }
     gameState = nextGameState;
   }
