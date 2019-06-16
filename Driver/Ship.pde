@@ -60,7 +60,7 @@ class Ship extends GameObject {
     } else {
       setMaxVelocity(new PVector(1, 1));
     }
-    if (getPosition().dist(getEnemyShip().getPosition()) <= 150) {
+    if (getPosition().dist(getEnemyShip().getPosition()) <= 200) {
       setAcceleration(new PVector(0, 0));
       setVelocity(new PVector(0, 0));
       setMaxVelocity( new PVector(2, 2));

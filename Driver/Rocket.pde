@@ -1,16 +1,20 @@
 class Rocket extends GameObject{
   Ship ship, enemy;
   float damage;
+  PVector direct;
   public Rocket(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitboxes, Ship s, float damage) {
     super(position,velocity, maxVelocity, acceleration, hitboxes);
     ship = s;
     enemy = ship.getEnemyShip();
     this.damage = damage;
+    direct = enemy.getPosition().sub(getPosition());
   } 
   
   void update(float secsPassed, float dt){
     setAcceleration(enemy.getPosition().sub(getPosition()));
+    applyAcceleration();
     applyVelocity();
+    
   }
   
   Ship getShip() {
@@ -25,7 +29,6 @@ class Rocket extends GameObject{
   }
   
   void display(float secsPassed, float dt){
-    PVector direct = enemy.getPosition().sub(getPosition());
     pushMatrix();
     translate(getPosition().x , getPosition().y);
     rotate(direct.heading());
