@@ -12,7 +12,8 @@ class Game {
   private String selected;
   private int gridSize = 20;
   public int money;
-
+  public boolean firstMut;
+  public int shape;
   LaserShooter l;
 
   private Button[] menuButtons;
@@ -31,20 +32,22 @@ class Game {
     menuButtons[1] = new Button(new PVector(width/2 - 180, height/2+100), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(360, 130))}, "Guide", 100, "guide");
 
     ships[0] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(2, 2), new PVector(0, 0), 1);
-    ships[1] = new Ship(new PVector(500, 500), new PVector(0, 0), new PVector(2, 2), new PVector(0, 0), 1);
+    ships[1] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(2, 2), new PVector(0, 0), 1);
     ships[0].setEnemyShip(ships[1]);
     ships[1].setEnemyShip(ships[0]);
 
     world = new World(3);
 
-    gameState = "menu";
+      gameState = "menu";
     nextGameState = gameState;
     selected="";
 
     gameFont = createFont("INVASION2000.TTF", 100);
     textFont(gameFont);
+    firstMut=true;
+    ship = ships[0];
   }
-  
+
   int page = 0;
 
   void buttonPressedOnce(String buttonText) { //sends signal when first pressed
@@ -55,10 +58,18 @@ class Game {
         ship.getComponents().get(ship.getComponents().size()-1);
       }
       newComp = null;
+      if (buttonText.equals("Go")) {
+        if (ship == ships[0]) {
+          ship = ships[1];
+          money=100;
+        } else {
+          nextGameState = "mutating";
+        }
+      }
     } else if (gameState.equals("menu")) {
       if (buttonText.equals("play")) {
         nextGameState = "editor";
-      } else if (buttonText.equals("guide")){
+      } else if (buttonText.equals("guide")) {
         nextGameState = "tutorial";
       }
     }
@@ -82,7 +93,7 @@ class Game {
   Component newComp = null;
   Ship ship = null;
 
-  boolean shadowGrid(Ship s) {
+  boolean shadowGrid() {
     fill(200, 200, 200);
     Rect gridBounds = new Rect(new PVector(-1, 99), new PVector(width+1, height - 99));
 
@@ -93,26 +104,26 @@ class Game {
 
     if (newComp == null) {
       if (selected.equals("laser")) {
-        newComp = new LaserShooter(s, new PVector(x, y).sub(s.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
+        newComp = new LaserShooter(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 20))
           }, 20, 1, 0, 1);
       } else if (selected.equals("shield")) {
-        newComp = new Shield(s, new PVector(x, y).sub(s.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
+        newComp = new Shield(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 40))
           });
       } else if (selected.equals("crew")) {
-        newComp = new Crew(s, new PVector(x, y).sub(s.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
+        newComp = new Crew(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(20, 20))
           });
       }
       if (newComp != null && mouse.collides(gridBounds)) {
-        s.addComponent(newComp);
+        ship.addComponent(newComp);
       }
     } else {
-      if (s.getComponents().get(s.getComponents().size()-1) != newComp && mouse.collides(gridBounds)) {
-        s.addComponent(newComp);
+      if (ship.getComponents().get(ship.getComponents().size()-1) != newComp && mouse.collides(gridBounds)) {
+        ship.addComponent(newComp);
       } else {
-        newComp.setPosition(new PVector(x, y).sub(s.getPosition()));
+        newComp.setPosition(new PVector(x, y).sub(ship.getPosition()));
       }
     }
 
@@ -136,19 +147,150 @@ class Game {
           }
         }
       }
-      if (mousePressed && tangent) {
+      if (mousePressed && tangent && placeable) {
+        if (selected.equals("laser")&&money-25>=0) {
+          money-=25;
+        } else if (selected.equals("shield")&&money-20>=0) {
+          money-=20;
+        } else if (selected.equals("crew")&&money-10>=0) {
+          money-=10;
+        }
         newComp=null;
         selected="";
       }
     }
-    if (s.getComponents().get(s.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
-      s.getComponents().remove(s.getComponents().size()-1);
+    if (ship.getComponents().get(ship.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
+      ship.getComponents().remove(ship.getComponents().size()-1);
+      newComp = null;
+    }
+    fill(0, 0, 0);
+    return false;
+  }
+  boolean mutationAdd(Rect gridBounds) {
+    float x = round(mouseX/gridSize)*gridSize;
+    float y = round(mouseY/gridSize)*gridSize;
+    if (newComp == null) {
+      if (selected.equals("laser")) {
+        newComp = new LaserShooter(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
+          new Rect(new PVector(0, 0), new PVector(40, 20))
+          }, 20, 1, 0, 1);
+      } else if (selected.equals("shield")) {
+        newComp = new Shield(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
+          new Rect(new PVector(0, 0), new PVector(40, 40))
+          });
+      } else if (selected.equals("crew")) {
+        newComp = new Crew(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
+          new Rect(new PVector(0, 0), new PVector(20, 20))
+          });
+      }
+      if (newComp != null && mouse.collides(gridBounds)) {
+        //println("yes");
+        ship.addComponent(newComp);
+      } else {
+        //println("no");
+      }
+    } else {
+      if (ship.getComponents().get(ship.getComponents().size()-1) != newComp && mouse.collides(gridBounds)) {
+        ship.addComponent(newComp);
+      } else {
+        newComp.setPosition(new PVector(x, y).sub(ship.getPosition()));
+      }
+    }
+
+    List<Component> comp=ship.getComponents();
+    boolean placeable=mouse.collides(gridBounds) && newComp != null;
+    if (placeable) {
+      //println("yes");
+      boolean tangent = false;
+      println(comp + ", " + newComp);
+      for (Component c : comp) {
+        if (c != newComp) {
+          //println(gridBounds.contains(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()))));
+
+          Rect cTranslated = new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition()));
+          Rect newTranslated = new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()));
+
+          println(cTranslated.getIntersectPoints(newTranslated));
+          if (cTranslated.getIntersectPoints(newTranslated) >= 2) {
+            tangent = true;
+          }
+
+          if (cTranslated.collides(newTranslated) || !gridBounds.contains(newTranslated)) {
+            placeable = false;
+          }
+        }
+      }
+      if (mousePressed && tangent&&placeable) {
+        newComp = null;
+        selected = "";
+      }
+    }
+    if (ship.getComponents().get(ship.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
+      ship.getComponents().remove(ship.getComponents().size()-1);
       newComp = null;
     }
     fill(0, 0, 0);
     return false;
   }
 
+  Ship[] tempShips = new Ship[3];
+  boolean otherFirstMut = true;
+
+  public void mutations(float secsRun, int shipnum, Rect mice) {
+    Rect choice1= new Rect(new PVector(-1, 299.0), new PVector( 221.0, 521.0));
+    Rect choice2= new Rect(new PVector(220.0, 280.0), new PVector( 480.0, 540.0));
+    Rect choice3= new Rect(new PVector(440.0, 280.0), new PVector( 720.0, 540.0));
+
+    if (mice.collides(choice1)) {
+      fill(100, 200, 200);
+      rect(0, 300, 220, 220);
+    } else if (mice.collides(choice2)) {
+      fill(100, 200, 200);
+      rect(240, 300, 220, 220);
+    } else if (mice.collides(choice3)) {
+      fill(100, 200, 200);
+      rect(480, 300, 220, 220);
+    }
+    fill(255, 255, 255);
+    drawGrid(0, 300, 220, 520);
+    drawGrid(240, 300, 460, 520);
+    drawGrid(480, 300, 700, 520);
+
+    if (otherFirstMut) {
+      otherFirstMut = false;
+      for (int i = 0; i < tempShips.length; i++) {
+        tempShips[i] = null;
+      }
+    }
+
+    for (int i = 0; i < tempShips.length; i++) {
+      if (tempShips[i] == null) {
+        tempShips[i] = new Ship(ships[shipnum]);
+      }
+    }
+
+    for (int i = 0; i < tempShips.length; i++) {
+      Ship copy = tempShips[i];
+      copy.setPosition(new PVector(60.0 + i * 240, 360.0));
+      ship=copy;
+      if (firstMut) {
+        firstMut=false;
+        //reset to true after selected
+        shape=(int)random(0, 3); //use arrays
+      }
+      if (shape==0) {
+        selected="laser";
+      } else if (shape==1) {
+        selected="crew";
+      } else {
+        selected="shield";
+      }
+      if (i == 0) {
+        mutationAdd(choice1); //use arrays
+      }
+      copy.display(secsRun, dt);
+    }
+  }
   public void update(float secsRunning, float dt) {
 
     mouse = new Rect(new PVector(mouseX, mouseY), new PVector(mouseX, mouseY));
@@ -162,15 +304,15 @@ class Game {
       fill(0);
       textSize(72);
       text("Space Crafting", width/2, 80);
-      
+
       fill(127);
       textSize(32);
       text("Make your own spaceship and battle\nit against a friend's!\nWatch as it changes over time.", width/2, 130);
-      
+
       for (Button b : menuButtons) {
         b.update(secsRunning, dt);
       }
-      
+
       for (Button b : menuButtons) {
         b.display(secsRunning, dt);
       }
@@ -193,9 +335,8 @@ class Game {
       for (Button b : buttons) {
         b.display(secsRunning, dt);
       }
-      ship = ships[0];
-      shadowGrid(ships[0]);
-      ships[0].display(secsRunning, dt);
+      shadowGrid();
+      ship.display(secsRunning, dt);
     } else if (gameState.equals("game")) {
       background(255);
       world.update(secsRunning, dt);
@@ -207,8 +348,16 @@ class Game {
         ship.display(secsRunning, dt);
       }
     } else if (gameState.equals("mutating")) {
+      background(255);
+      textSize(50);
+      fill(255, 200, 0);
+      text("Player 1 Won!", 175, 50);
+      textSize(30);
+      text("5-4", 325, 100);
+      fill(10, 10, 200);
+      text("Player 1 Mutations:", 20, 200);
+      mutations(secsRunning, 0, mouse);
     } else if (gameState.equals("tutorial")) {
-      
     } else {
       background(255);
       fill(255);
