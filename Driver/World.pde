@@ -79,7 +79,7 @@ class World {
         Rect transHR = new Rect(hR, r.getPosition());
         if (transHC.collides(transHR)) {
           c.addHealth(-1 * r.getDam());
-          world.getLaser().remove(r);
+          world.getLasers().remove(r);
           isDone = true;
         }
       }
