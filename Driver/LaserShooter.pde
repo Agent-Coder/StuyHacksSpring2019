@@ -65,10 +65,10 @@ class Laser {
   void display() {
     stroke(255, 0, 0);
     strokeWeight(20);
-    line(start.x, start.y, end.x, end.y);
+    line(start.x + 10, start.y+10, end.x + 10, end.y + 10);
     stroke(255, 102, 102);
     strokeWeight(10);
-    line(start.x, start.y, end.x, end.y);
+    line(start.x + 10, start.y+10, end.x + 10, end.y + 10);
     strokeWeight(1);
     stroke(0);
   }

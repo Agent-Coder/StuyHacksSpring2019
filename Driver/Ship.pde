@@ -55,6 +55,23 @@ class Ship extends GameObject {
       fuel -= 0.1 * dt; //TEMP]
       baseAcceleration = getAcceleration();
       setMaxVelocity( new PVector(2, 2));
+      boolean isDone = false;
+      for (int i = 0; i < world.fuels.size() && !isDone; i++) {
+        for (int j = 0; j < components.size() && !isDone; j++) {
+          Fuel f = world.fuels.get(i);
+          Component c = components.get(i);
+          Rect hf = f.getHitBoxes()[0];
+          Rect hc = c.getHitBoxes()[0];
+          
+          Rect transC = new Rect(hc, getPosition().add(c.getPosition()));
+          Rect transF = new Rect(hf, f.getPosition());
+          if (transC.collides(transF)) {
+            fuel += f.getFuelLevel();
+            world.getFuels().remove(f);
+            isDone = true;
+          }
+        }
+      }
     } else {
       setMaxVelocity( new PVector(1, 1));
       Fuel closest = getClosestFuel();
@@ -150,18 +167,18 @@ class Ship extends GameObject {
       setVelocity(new PVector(getVelocity().x * -1, getVelocity().y));
       setAcceleration(new PVector(getAcceleration().x * -1, getAcceleration().y));
       if (bounds.x() + getPosition().x <= 2) {
-        setPosition(new PVector(2.01 + bounds.x(), getPosition().y));
+        setPosition(new PVector(2.01 - bounds.x(), getPosition().y));
       } else {
-        setPosition(new PVector(width - 2.01 - bounds.width(), getPosition().y));
+        setPosition(new PVector(width - 2.01 - bounds.width() - bounds.x(), getPosition().y));
       }
     }
     if (bounds.y() + getPosition().y <= 2 || bounds.y() + bounds.height() + getPosition().y >= height - 2) {
       setVelocity(new PVector(getVelocity().x, getVelocity().y * -1));
       setAcceleration(new PVector(getAcceleration().x, getAcceleration().y * -1));
       if (bounds.y() + getPosition().y <= 2) {
-        setPosition(new PVector(getPosition().x, 2.01 + bounds.y()));
+        setPosition(new PVector(getPosition().x, 2.01 - bounds.y()));
       } else {
-        setPosition(new PVector(getPosition().x, width - 2.01 - bounds.height()));
+        setPosition(new PVector(getPosition().x, height - 2.01 - (bounds.height() + bounds.y())));
       }
     }
   }

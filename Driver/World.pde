@@ -34,7 +34,7 @@ class World {
   void genFuel() {
     PVector pos;
     do {
-      pos = new PVector(random(width), random(height));
+      pos = new PVector(random(width - 40) + 20, random(height - 40) + 20);
     } while (!(pos.dist(ships[0].getPosition()) > 80 && pos.dist(ships[1].getPosition()) > 80));
     
     fuels.add(new Fuel(pos.copy()));
