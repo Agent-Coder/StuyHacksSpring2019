@@ -18,9 +18,8 @@ class Ship extends GameObject {
     components.add(mainBody);
     components.add(
       new RocketShooter(this, new PVector(0,0), new PVector(0,0), new PVector(0,0), new PVector(0,0), new Rect[] {
-        new Rect(new PVector(0,0), new PVector(20,40)
-      }, 100,5,20)
-    );
+        new Rect(new PVector(0,0), new PVector(20,40))
+      }, 100,5,20));
     baseAcceleration = acceleration;
   }
   
