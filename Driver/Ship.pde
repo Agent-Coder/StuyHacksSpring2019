@@ -4,6 +4,7 @@ class Ship extends GameObject {
   private Ship enemyShip;
   private float fuel;
   private float timeSinceFuelRanOut;
+  private PVector baseAcceleration;
 
   public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, float nFuel) {
     super(position, velocity, maxVelocity, acceleration, new Rect[0]);
@@ -17,6 +18,7 @@ class Ship extends GameObject {
     fuel = nFuel;
     timeSinceFuelRanOut = 0;
     components.add(mainBody);
+    baseAcceleration = acceleration;
     //LaserShooter l = new LaserShooter(this, new PVector(100, 0),new PVector(0, 0),new PVector(0, 0),new PVector(0, 0),new Rect[]{new Rect(new PVector(0, 0), new PVector(100, 100))},100,5,20,100);
     //components.add(l);
   }
@@ -36,7 +38,10 @@ class Ship extends GameObject {
     }
     if (fuel >= 0) {
       fuel -= 0.1 * dt; //TEMP]
+      baseAcceleration = getAcceleration();
+      setMaxVelocity( new PVector(2, 2));
     } else {
+      setMaxVelocity( new PVector(1, 1));
       Fuel closest = getClosestFuel();
       if (closest != null) {
         PVector target = closest.getPosition().sub(getPosition());
@@ -46,9 +51,9 @@ class Ship extends GameObject {
           
           Rect translatedB = new Rect(hB, getPosition().add(components.get(i).getPosition()));
           Rect translatedClosest = new Rect(closest.getHitBoxes()[0], closest.getPosition());
-          
           if (translatedB.collides(translatedClosest)) {
             fuel += closest.getFuelLevel();
+            setMaxVelocity(new PVector(2, 2));
             world.getFuels().remove(closest);
           }
         }
@@ -94,5 +99,9 @@ class Ship extends GameObject {
       }
     }
     return closestFuel;
+  }
+  
+  public void reflect() {
+    
   }
 }
