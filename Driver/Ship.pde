@@ -18,6 +18,11 @@ class Ship extends GameObject {
     fuel = nFuel;
     timeSinceFuelRanOut = 0;
     components.add(mainBody);
+    components.add(
+      new RocketShooter(this, new PVector(0,0), new PVector(0,0), new PVector(0,0), new PVector(0,0), new Rect[] {
+        new Rect(new PVector(0,0), new PVector(20,40)
+      }, 100,5,20)
+    );
     baseAcceleration = acceleration;
     //LaserShooter l = new LaserShooter(this, new PVector(100, 0),new PVector(0, 0),new PVector(0, 0),new PVector(0, 0),new Rect[]{new Rect(new PVector(0, 0), new PVector(100, 100))},100,5,20,100);
     //components.add(l);
@@ -126,7 +131,6 @@ class Ship extends GameObject {
     return new Rect(new PVector(minX, minY), new PVector(maxX, maxY));
   }
   public void reflect() {
-    boolean isDone = false;
     Rect bounds = calcBound();
     if (bounds.x() + getPosition().x <= 2 || bounds.x() + bounds.width() + getPosition().x >= width - 2) {
       setVelocity(new PVector(getVelocity().x * -1, getVelocity().y));
@@ -136,22 +140,7 @@ class Ship extends GameObject {
       } else {
         setPosition(new PVector(width - 2.01 - bounds.width(), getPosition().y));
       }
-      println(bounds.width());
     }
-    /*for (int i = 0; i < components.size() && !isDone; i++) { //do right or left
-      Component c = components.get(i);
-      if (c.getPosition().y + getPosition().y <= 2 || c.getPosition().y + getPosition().y + c.getHitBoxes()[0].height() >= height - 2) {
-        println(getVelocity().y);
-        setVelocity(new PVector(getVelocity().x, getVelocity().y * -1));
-        setAcceleration(new PVector(getAcceleration().x, getAcceleration().y *= -1));
-        isDone = true;
-        if (c.getPosition().y + getPosition().y <= 2) {
-          setPosition(new PVector(getPosition().x, 2.1));
-        } else {
-          setPosition(new PVector(getPosition().x, height - 2.1 - c.getHitBoxes()[0].height()));
-        }
-      }
-    }*/
     if (bounds.y() + getPosition().y <= 2 || bounds.y() + bounds.height() + getPosition().y >= height - 2) {
       setVelocity(new PVector(getVelocity().x, getVelocity().y * -1));
       setAcceleration(new PVector(getAcceleration().x, getAcceleration().y * -1));
