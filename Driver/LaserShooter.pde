@@ -3,6 +3,12 @@ class LaserShooter extends Component {
   float attack;
   Laser laser;
   int frames;
+  
+  public Component copy() {
+    LaserShooter temp = new LaserShooter(getShip(), getPosition(), getVelocity(), getMaxVelocity(), getAcceleration(), getHitBoxes(), getHealth(), getCoolDown(), accuracy, attack);
+    temp.frames = frames;
+    return temp;
+  }
 
   public LaserShooter(Ship ship, PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitBoxes, float health, float coolDown, float accuracy, float attack) {
     super(ship, position, velocity, maxVelocity, acceleration, hitBoxes, health, coolDown);
@@ -39,7 +45,10 @@ class LaserShooter extends Component {
     if (laser != null) {
       laser.display();
     }
-    fill(255, 0, 255);
+    int bVal = 153-26;
+    int gVal = 204-140;
+    float percent = (attack - 5)/ (30-5);
+    fill(255, 153- (percent*bVal), 204-(percent * gVal));
     rect(getPosition().x, getPosition().y, 40, 20);
   }
 

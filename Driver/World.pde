@@ -27,35 +27,38 @@ class World {
   }
 
   public void update(float secs, float dt) {
-    fuelSpawnCoolDown -= dt;
-    if (fuelSpawnCoolDown <= 0) {
-      fuelSpawnCoolDown = baseFuelSpawnCoolDown;
-      genFuel();
-    }
-    pointSpawnCoolDown -= dt;
-    if (pointSpawnCoolDown <= 0) {
-      pointSpawnCoolDown = basePointSpawnCoolDown;
-      genPoint();
-    }
-    for (int i = rockets.size() - 1; i >= 0; i--) {
-      //println(rockets.size());
-      Rocket r = rockets.get(i);
-      r.update(secs, dt);
-      boolean isDone = false;
-      for (int j = 0; j < r.getEnemy().getComponents().size() && !isDone; j++) {
-        Component c = r.getEnemy().getComponents().get(j);
-        Rect hC = c.getHitBoxes()[0];
-        Rect hR = r.getHitBoxes()[0];
-        Rect transHC = new Rect(hC, r.getEnemy().getPosition().add(c.getPosition()));
-        Rect transHR = new Rect(hR, r.getPosition());
-        if (transHC.collides(transHR)) {
-          c.addHealth(-1 * r.getDam());
-          world.getRockets().remove(r);
-          isDone = true;
-        }
+    if (gameState.equals("game")) {
+      fuelSpawnCoolDown -= dt;
+      if (fuelSpawnCoolDown <= 0) {
+        fuelSpawnCoolDown = baseFuelSpawnCoolDown;
+        genFuel();
       }
-      if (r.getPosition().x <= -35 || r.getPosition().x >= width - 2 || r.getPosition().y <= 1 || r.getPosition().y >=width - 21) {
-        world.getRockets().remove(r);
+      pointSpawnCoolDown -= dt;
+      if (pointSpawnCoolDown <= 0) {
+        pointSpawnCoolDown = basePointSpawnCoolDown;
+        genPoint();
+      }
+      for (int i = rockets.size() - 1; i >= 0; i--) {
+        //println(rockets.size());
+        Rocket r = rockets.get(i);
+        r.update(secs, dt);
+        boolean isDone = false;
+        for (int j = 0; j < r.getEnemy().getComponents().size() && !isDone; j++) {
+          Component c = r.getEnemy().getComponents().get(j);
+          Rect hC = c.getHitBoxes()[0];
+          Rect hR = r.getHitBoxes()[0];
+          Rect transHC = new Rect(hC, r.getEnemy().getPosition().add(c.getPosition()));
+          Rect transHR = new Rect(hR, r.getPosition());
+          if (transHC.collides(transHR)) {
+            println("decreasinbg");
+            c.addHealth(-1 * r.getDam());
+            world.getRockets().remove(r);
+            isDone = true;
+          }
+        }
+        if (r.getPosition().x <= -35 || r.getPosition().x >= width - 2 || r.getPosition().y <= 1 || r.getPosition().y >=width - 21) {
+          world.getRockets().remove(r);
+        }
       }
     }
   }

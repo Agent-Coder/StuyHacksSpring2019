@@ -25,6 +25,8 @@ abstract class Component extends GameObject{
     this.baseCoolDown = c.coolDown;
   }
   
+  public abstract Component copy();
+  
   public abstract void mutate(float mutationFactor);
   public abstract void reset();
   

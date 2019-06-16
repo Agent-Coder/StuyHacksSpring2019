@@ -4,11 +4,12 @@ public World world;
 
 public PFont gameFont;
 
+public String gameState;
+public String nextGameState;
+
 class Game {
 
   private Button[] buttons;
-  private String gameState;
-  private String nextGameState;
   private String selected;
   private int gridSize = 20;
   private int numLevels = 0;
@@ -100,7 +101,7 @@ class Game {
       }
     } else if (gameState.equals("mutating")) {
       if (buttonText.equals("Undo")) {
-        println(tempShips[0].getComponents() + ", " + startingSize);
+        //println(tempShips[0].getComponents() + ", " + startingSize);
         if (tempShips[0].getComponents().size()>startingSize) {
           placed=false;
           tempShips[0].getComponents().remove(tempShips[0].getComponents().size()-1);
@@ -284,6 +285,7 @@ class Game {
   int startingSize=0;
   int upgrade;
   float mutationFac;
+  boolean mutated=false;
   public void mutations(float secsRun, int shipnum, Rect mice) {
     Rect choice1= new Rect(new PVector(-1, 299.0), new PVector( 221.0, 521.0));
     Rect choice2= new Rect(new PVector(220.0, 280.0), new PVector( 480.0, 540.0));
@@ -308,8 +310,6 @@ class Game {
       otherFirstMut = false;
       for (int i = 0; i < tempShips.length; i++) {
         tempShips[i] = null;
-        upgrade=(int)random(0,ship.getComponents().size());
-        mutationFac=random(0,1);
       }
     }
 
@@ -321,8 +321,11 @@ class Game {
 
     if (firstMut) {
       firstMut=false;
-      startingSize=ship.getComponents().size();
+      startingSize=tempShips[0].getComponents().size();
       //reset to true after selected
+      //println(ship.getComponents().size());
+      upgrade=(int)random(0, tempShips[1].getComponents().size());
+      mutationFac=random(-1, 1);
       shape=(int)random(0, 3); //use arrays
     }
 
@@ -341,11 +344,10 @@ class Game {
         if (i == 0) {
           placed=mutationAdd(choice1); //use arrays
         }
-      }
-      else if(i==1){
-        println(upgrade);
-        ships[i].getComponents().get(upgrade).mutate(mutationFac);
-        
+      } else if (i==1&&!mutated) {
+        mutated=true;
+        //println(upgrade);
+        tempShips[i].getComponents().get(upgrade).mutate(mutationFac);
       }
       copy.display(secsRun, dt);
     }
@@ -484,10 +486,25 @@ class Game {
 
       textAlign(CORNER);
     } else if (gameState.equals("end")) {
+      background(255);
+      textAlign(CENTER);
+      if (ships[0].getWins() > ships[1].getWins()) {
+        fill(127);
+        textSize(50);
+        text("PLAYER ONE WON!!!", width/2, 130);
+      } else if (ships[0].getWins() < ships[1].getWins()) {
+        fill(127);
+        textSize(50);
+        text("PLAYER TWO WON!!!", width/2, 130);
+      } else {
+        fill(127);
+        textSize(50);
+        text("GAME ENDED IN DRAW", width/2, 130);
+      }
     } else {
       background(255);
       fill(255);
-      text("You messed up lmao", width/2, height/2);
+      text("We messed up lmao", width/2, height/2);
     }
     gameState = nextGameState;
   }
