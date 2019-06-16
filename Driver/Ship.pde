@@ -14,7 +14,7 @@ class Ship extends GameObject {
     //}, 20, 1, 0);
     mainBody = new MainBody(this, new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
       new Rect(new PVector(0, 0), new PVector(100, 100))
-      }, 20, 1, 0);
+      }, 50, 1, 0);
     fuel = nFuel;
     components.add(mainBody);
     baseAcceleration = acceleration;
@@ -51,7 +51,7 @@ class Ship extends GameObject {
     println(mainBody.getHealth());
     for (int i = 0; i < components.size(); i++) {
       Component c = components.get(i);
-
+      c.checkDead();
       c.update(secsPassed, dt);
     }
     if (fuel >= 0) {
