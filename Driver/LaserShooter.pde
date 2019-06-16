@@ -1,90 +1,84 @@
 class LaserShooter extends Component {
-  float accuracy; //theta
   float attack;
-  Laser laser;
-  int frames;
   
   public Component copy() {
-    LaserShooter temp = new LaserShooter(getShip(), getPosition(), getVelocity(), getMaxVelocity(), getAcceleration(), getHitBoxes(), getHealth(), getCoolDown(), accuracy, attack);
-    temp.frames = frames;
+    RocketShooter temp = new RocketShooter(getShip(), getPosition(), getVelocity(), getMaxVelocity(), getAcceleration(), getHitBoxes(), getHealth(), getCoolDown(), attack);
     return temp;
   }
-
-  public LaserShooter(Ship ship, PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitBoxes, float health, float coolDown, float accuracy, float attack) {
+  
+  public LaserShooter(Ship ship, PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitBoxes, float health, float coolDown, float attack) {
     super(ship, position, velocity, maxVelocity, acceleration, hitBoxes, health, coolDown);
-    this.accuracy = accuracy;
     this.attack = attack;
-    laser = null;
-    frames = 0;
   }
-
-  void mutate(float mutationFactor) { //mutation factor is a percent in decimal form (?? what)
-    accuracy -= abs(mutationFactor*3);
-    attack += abs(mutationFactor*20);
+  
+  void mutate(float mutationFactor){
+    attack += mutationFactor *20;
   }
-
-  void update(float secsPassed, float dt) { //time since game starts, time since last frame
-    Ship other = getShip().getEnemyShip();
-    addCoolDown(-dt);
-    if (getCoolDown() <= 0) {
-      setCoolDown(getBaseCoolDown());
-      frames = 30;
-    }
-    if (frames >= 0) {
-      PVector enemyPos = other.getPosition();
-      float theta = random(0, accuracy);
-      if ((int) random(2) == 0) theta *= -1;
-      PVector shootVec = new PVector (cos(theta)*(enemyPos.x-getPosition().x), sin(theta)*(enemyPos.y-getPosition().y));
-      laser = new Laser(getPosition(), shootVec, 100, getShip(), accuracy);
-      frames--;
-    }
+  
+  void reset(){
+    setHealth(getBaseHealth());
   }
-
-
+  
   void display(float secsPassed, float dt) {
-    if (laser != null) {
-      laser.display();
-    }
-    int bVal = 153-26;
-    int gVal = 204-140;
-    float percent = (attack - 5)/ (30-5);
-    fill(255, 153- (percent*bVal), 204-(percent * gVal));
+    float percent = (attack)/(5);
+    int rVal = 128;
+    int bVal = 159-51;
+    int gVal = 255-204;
+    fill(128-(percent * rVal), 159 - (percent * bVal), 255 - (percent * gVal));
     rect(getPosition().x, getPosition().y, 40, 20);
   }
-
-  void reset() {
-    setHealth(getBaseHealth());
-    laser = null;
-    frames = 0;
+  
+  void update(float secsPassed, float dt){
+    addCoolDown(-dt);
+    if (getCoolDown() <= 0) {
+      println("hl");
+      setCoolDown(getBaseCoolDown());
+      PVector rocketVel = getShip().getEnemyShip().getPosition().sub(getPosition().add(getShip().getPosition()));
+      rocketVel.normalize().mult(10);
+      Rocket r = new Rocket(getPosition().add(getShip().getPosition()), rocketVel.mult(60), rocketVel.mult(60), rocketVel.normalize(), new Rect[] {new Rect(new PVector(0, 0), new PVector(20, 10))}, getShip(), attack);
+      world.rockets.add(r);
+    }
   }
 }
 
-class Laser {
-  PVector start, end;
-  Ship ship;
-  Ship enemy;
-  float accuracy;
-
-  Laser(PVector start, PVector direction, float laserLength, Ship s, float accuracy) {
-    this.start = start.copy();
-    PVector directionNormal = direction.copy().normalize();
-    directionNormal.mult(laserLength);
-    this.accuracy = accuracy;
-    //end = PVector.add(start, directionNormal);
+class Laser extends GameObject{
+  Ship ship, enemy;
+  float damage;
+  PVector direct;
+  public Laser(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitboxes, Ship s, float damage) {
+    super(position,velocity, maxVelocity, acceleration, hitboxes);
     ship = s;
-    enemy = s.getEnemyShip();
-    end = enemy.getPosition();
-    end.rotate(random(accuracy*2)-accuracy);
+    enemy = ship.getEnemyShip();
+    this.damage = damage;
+    direct = enemy.getPosition().sub(getPosition());
+  } 
+  
+  void update(float secsPassed, float dt){
+    applyVelocity();
   }
-
-  void display() {
-    stroke(255, 0, 0);
-    strokeWeight(15);
-    line(start.x + 10, start.y+10, end.x + 10, end.y + 10);
-    stroke(255, 102, 102);
-    strokeWeight(5);
-    line(start.x + 10, start.y+10, end.x + 10, end.y + 10);
-    strokeWeight(1);
-    stroke(0);
+  
+  Ship getShip() {
+    return ship;
+  }
+  Ship getEnemy() {
+    return enemy;
+  }
+  
+  float getDam() {
+    return damage;
+  }
+  
+  void display(float secsPassed, float dt){
+    pushMatrix();
+    translate(getPosition().x , getPosition().y);
+    rotate(direct.heading());
+    fill(32, 52, 204);
+    rectMode(CORNER);
+    rect(0, 0, getHitBoxes()[0].width(), getHitBoxes()[0].height());
+    popMatrix();
+  }
+  
+  String toString() {
+    return "rocket";
   }
 }
