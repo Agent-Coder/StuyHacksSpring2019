@@ -2,6 +2,8 @@ public Rect mouse;
 public Ship[] ships;
 public World world;
 
+public PFont gameFont;
+
 class Game {
 
   private Button[] buttons;
@@ -13,6 +15,8 @@ class Game {
 
   LaserShooter l;
 
+  private Button[] menuButtons;
+
   public Game() {
     ships = new Ship[2];
     money=100;
@@ -22,6 +26,10 @@ class Game {
     buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew", 32, "crew");
     buttons[3] = new Button(new PVector(width-100, height-90), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(80, 80))}, "Next", 32, "Go");
 
+    menuButtons = new Button[2];
+    menuButtons[0] = new Button(new PVector(width/2 - 180, height/2-100), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(360, 160))}, "Play", 100, "play");
+    menuButtons[1] = new Button(new PVector(width/2 - 180, height/2+100), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(360, 130))}, "Guide", 100, "guide");
+
     ships[0] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(2, 2), new PVector(0, 0), 1);
     ships[1] = new Ship(new PVector(500, 500), new PVector(0, 0), new PVector(2, 2), new PVector(0, 0), 1);
     ships[0].setEnemyShip(ships[1]);
@@ -29,18 +37,29 @@ class Game {
 
     world = new World(3);
 
-    gameState = "game";
+    gameState = "menu";
     nextGameState = gameState;
     selected="";
+
+    gameFont = createFont("INVASION2000.TTF", 100);
+    textFont(gameFont);
   }
 
   void buttonPressedOnce(String buttonText) { //sends signal when first pressed
     println("Button " + buttonText + " was pressed.");
-    selected=buttonText;
-    if (ship.getComponents().get(ship.getComponents().size() - 1) == newComp) {
-      ship.getComponents().get(ship.getComponents().size()-1);
+    if (gameState.equals("editor")) {
+      selected=buttonText;
+      if (ship.getComponents().get(ship.getComponents().size() - 1) == newComp) {
+        ship.getComponents().get(ship.getComponents().size()-1);
+      }
+      newComp = null;
+    } else if (gameState.equals("menu")) {
+      if (buttonText.equals("play")) {
+        nextGameState = "editor";
+      } else if (buttonText.equals("guide")){
+        
+      }
     }
-    newComp = null;
   }
   void buttonPressed(String buttonText) { //sends signal while pressed
   }
@@ -94,7 +113,7 @@ class Game {
         newComp.setPosition(new PVector(x, y).sub(s.getPosition()));
       }
     }
-        
+
     List<Component> comp=ship.getComponents();
     boolean placeable=mouse.collides(gridBounds) && newComp != null;
     if (placeable) {
@@ -102,20 +121,20 @@ class Game {
       for (Component c : comp) {
         if (c != newComp) {
           //println(gridBounds.contains(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()))));
-          
+
           Rect cTranslated = new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition()));
           Rect newTranslated = new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()));
-                    
+
           if (cTranslated.getIntersectPoints(newTranslated) >= 2) {
             tangent = true;
           }
-          
+
           if (c != newComp && cTranslated.collides(newTranslated) || !gridBounds.contains(newTranslated)) {
             placeable = false;
           }
         }
       }
-      if(mousePressed && tangent){
+      if (mousePressed && tangent) {
         newComp=null;
         selected="";
       }
@@ -132,13 +151,40 @@ class Game {
 
     mouse = new Rect(new PVector(mouseX, mouseY), new PVector(mouseX, mouseY));
     if (gameState.equals("menu")) {
+      color col1 = color(255, 255, 240);
+      color col2 = color(240, 255, 255);
+      background(lerpColor(col1, col2, sin(secsRunning * 2.5f)));
+
+      textAlign(CENTER);
+
+      fill(0);
+      textSize(72);
+      text("Space Crafting", width/2, 80);
+      
+      fill(127);
+      textSize(32);
+      text("Make your own spaceship and battle\nit against a friend's!\nWatch as it changes over time.", width/2, 130);
+      
+      for (Button b : menuButtons) {
+        b.update(secsRunning, dt);
+      }
+      
+      for (Button b : menuButtons) {
+        b.display(secsRunning, dt);
+      }
+
+      textSize(30);
+      fill(220, 40, 40);
+      text("Made by Greg Zborovsky, George Zhou,\nAmanda Zheng, Vivian Huynh", width/2, height - 60);
+
+      textAlign(CORNER);
     } else if (gameState.equals("editor")) {
       background(255);
       drawGrid(0, 100, width, height-100);
-      fill(0,255,255);
-      rect(0, 600, 100,100);
-      fill(50,180,50);
-      text("$"+str(money),50,height-50);
+      fill(0, 255, 255);
+      rect(0, 600, 100, 100);
+      fill(50, 180, 50);
+      text("$"+str(money), 50, height-50);
       for (Button b : buttons) {
         b.update(secsRunning, dt);
       }
