@@ -428,7 +428,7 @@ class Game {
         textContent = "This is the actual game field.\nWatch as your ship and the enemy\nship battle one another on the board.";
       } else if (page == 2) {
         header = "Mutation";
-        textContent = "After every round, both\nspaceships will mutate into something\nslightly different to make\nthe game more exciting!";
+        textContent = "After every round, both\nspaceships will mutate into\nsomethingslightly different to make\nthe game more exciting!";
       } else if (page == 3) {
         header = "Final Notes";
         textContent = "Whoever won the most rounds\nis the winner. Remember,\n HAVE FUN!";
