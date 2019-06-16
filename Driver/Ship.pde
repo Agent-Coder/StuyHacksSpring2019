@@ -59,6 +59,7 @@ class Ship extends GameObject {
         }
       }
     }
+    reflect();
     applyAcceleration();
     applyVelocity();
   }
@@ -101,7 +102,64 @@ class Ship extends GameObject {
     return closestFuel;
   }
   
+  public Rect calcBound() {
+    float minX = 0;
+    float minY = 0;
+    float maxX = 0;
+    float maxY = 0;
+    for (int i = 0; i < components.size(); i++) {
+      float x = components.get(i).getPosition().x;
+      float y = components.get(i).getPosition().y;
+      if (x < minX) {
+        minX = x;
+      }
+      if (x + components.get(i).getHitBoxes()[0].width() > maxX) {
+        maxX = x + components.get(i).getHitBoxes()[0].width();
+      }
+      if (y < minY) {
+        minY = y;
+      }
+      if (y + components.get(i).getHitBoxes()[0].height() > maxY) {
+        maxY = y + components.get(i).getHitBoxes()[0].height();
+      }
+    }
+    return new Rect(new PVector(minX, minY), new PVector(maxX, maxY));
+  }
   public void reflect() {
-    
+    boolean isDone = false;
+    Rect bounds = calcBound();
+    if (bounds.x() + getPosition().x <= 2 || bounds.x() + bounds.width() + getPosition().x >= width - 2) {
+      setVelocity(new PVector(getVelocity().x * -1, getVelocity().y));
+      setAcceleration(new PVector(getAcceleration().x * -1, getAcceleration().y));
+      if (bounds.x() + getPosition().x <= 2) {
+        setPosition(new PVector(2.01 + bounds.x(), getPosition().y));
+      } else {
+        setPosition(new PVector(width - 2.01 - bounds.width(), getPosition().y));
+      }
+      println(bounds.width());
+    }
+    /*for (int i = 0; i < components.size() && !isDone; i++) { //do right or left
+      Component c = components.get(i);
+      if (c.getPosition().y + getPosition().y <= 2 || c.getPosition().y + getPosition().y + c.getHitBoxes()[0].height() >= height - 2) {
+        println(getVelocity().y);
+        setVelocity(new PVector(getVelocity().x, getVelocity().y * -1));
+        setAcceleration(new PVector(getAcceleration().x, getAcceleration().y *= -1));
+        isDone = true;
+        if (c.getPosition().y + getPosition().y <= 2) {
+          setPosition(new PVector(getPosition().x, 2.1));
+        } else {
+          setPosition(new PVector(getPosition().x, height - 2.1 - c.getHitBoxes()[0].height()));
+        }
+      }
+    }*/
+    if (bounds.y() + getPosition().y <= 2 || bounds.y() + bounds.height() + getPosition().y >= height - 2) {
+      setVelocity(new PVector(getVelocity().x, getVelocity().y * -1));
+      setAcceleration(new PVector(getAcceleration().x, getAcceleration().y * -1));
+      if (bounds.y() + getPosition().y <= 2) {
+        setPosition(new PVector(getPosition().x, 2.01 + bounds.y()));
+      } else {
+        setPosition(new PVector(getPosition().x, width - 2.01 - bounds.height()));
+      }
+    }
   }
 }
