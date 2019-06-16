@@ -29,7 +29,7 @@ class Game {
     buttons[0] = new Button(new PVector(10, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Bullets\n$25", 25, "laser");
     buttons[1] = new Button(new PVector(160, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Shield\n$20", 25, "shield");
     buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew\n$10", 25, "crew");
-    buttons[3] = new Button(new PVector(460, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Rocket\n$10", 25 , "rocket");
+    buttons[3] = new Button(new PVector(460, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Rocket\n$10", 25, "rocket");
     buttons[4] = new Button(new PVector(width-100, height-90), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(80, 80))}, "Next", 32, "Go");
 
     menuButtons = new Button[2];
@@ -64,9 +64,9 @@ class Game {
 
   int page = 0;
   int finalPageIndex = 3;
-  
+
   int mutationNum = 0;
-  
+
   void buttonPressedOnce(String buttonText) { //sends signal when first pressed
     println("Button " + buttonText + " was pressed.");
     if (gameState.equals("editor")) {
@@ -116,6 +116,8 @@ class Game {
           mutationNum = 0;
           ships[0].reset();
           ships[1].reset();
+          ships[0].setPosition(new PVector(100, 300));
+          ships[1].setPosition(new PVector(500, 300));
         }
         if (buttonText.equals("Select1")&&placed) {
           ships[mutationNum]=tempShips[0];
@@ -289,10 +291,10 @@ class Game {
       }
     }
     if (ship.getComponents().size() > 0)
-    if (ship.getComponents().get(ship.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
-      ship.getComponents().remove(ship.getComponents().size()-1);
-      newComp = null;
-    }
+      if (ship.getComponents().get(ship.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
+        ship.getComponents().remove(ship.getComponents().size()-1);
+        newComp = null;
+      }
     fill(0, 0, 0);
     return false;
   }
@@ -334,7 +336,7 @@ class Game {
 
     if (firstMut) {
       firstMut=false;
-      startingSize=tempShips[0].getComponents().size();
+      startingSize=tempShips[shipnum].getComponents().size();
       //reset to true after selected
       //println(ship.getComponents().size());
       upgrade=(int)random(0, tempShips[1].getComponents().size());
@@ -366,9 +368,11 @@ class Game {
       copy.display(secsRun, dt);
     }
   }
-  
+
   float roundTimer = 30;
-  
+
+  boolean singleMutate = true;
+
   public void update(float secsRunning, float dt) {
     int currentWinner = 2;
     mouse = new Rect(new PVector(mouseX, mouseY), new PVector(mouseX, mouseY));
@@ -429,13 +433,13 @@ class Game {
         for (Ship ship : ships) {
           ship.display(secsRunning, dt);
         }
-      } else{
+      } else {
         roundTimer = 30;
         println(ships[0].isDead() + ", " + ships[1].isDead() + ", " + roundTimer);  
         if (ships[0].isDead()) {
           ships[1].incWins();
           currentWinner = 1;
-        } else if (ships[1].isDead()){
+        } else if (ships[1].isDead()) {
           ships[0].incWins();
           currentWinner = 0;
         }
@@ -443,6 +447,7 @@ class Game {
           nextGameState = "end";
         } else {
           nextGameState = "mutating";
+          singleMutate = true;
         }
         numLevels++;
       }
@@ -452,10 +457,18 @@ class Game {
       fill(255, 200, 0);
       text("Player " + (currentWinner) + " Won!", 200, 50);
       textSize(30);
+      if (singleMutate) {
+        singleMutate = false;
+        if (currentWinner==0) {
+          ships[0].incWins();
+        } else {
+          ships[1].incWins();
+        }
+      }
       text(ships[0].getWins() + "-" + ships[1].getWins(), 325, 100);
       fill(10, 10, 200);
       text("Player "+(mutationNum + 1)+" Mutations: ", 200, 150);
-      mutations(secsRunning, 0, mouse);
+      mutations(secsRunning, mutationNum, mouse);
       for (Button b : mutationButton) {
         b.update(secsRunning, dt);
       }
