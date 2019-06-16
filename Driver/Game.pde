@@ -17,6 +17,7 @@ class Game {
   LaserShooter l;
 
   private Button[] menuButtons;
+  private Button tutorialNext;
 
   public Game() {
     ships = new Ship[2];
@@ -31,6 +32,8 @@ class Game {
     menuButtons[0] = new Button(new PVector(width/2 - 180, height/2-100), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(360, 160))}, "Play", 100, "play");
     menuButtons[1] = new Button(new PVector(width/2 - 180, height/2+100), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(360, 130))}, "Guide", 100, "guide");
 
+    tutorialNext = new Button(new PVector(width - 125, height - 125), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(120, 120))}, "->", 100, "nextPage");
+
     ships[0] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(2, 2), new PVector(0, 0), 1);
     ships[1] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(2, 2), new PVector(0, 0), 1);
     ships[0].setEnemyShip(ships[1]);
@@ -38,7 +41,7 @@ class Game {
 
     world = new World(3);
 
-      gameState = "menu";
+    gameState = "menu";
     nextGameState = gameState;
     selected="";
 
@@ -49,6 +52,7 @@ class Game {
   }
 
   int page = 0;
+  int finalPageIndex = 3;
 
   void buttonPressedOnce(String buttonText) { //sends signal when first pressed
     println("Button " + buttonText + " was pressed.");
@@ -71,6 +75,14 @@ class Game {
         nextGameState = "editor";
       } else if (buttonText.equals("guide")) {
         nextGameState = "tutorial";
+      }
+    } else if (gameState.equals("tutorial")) {
+      if (buttonText.equals("nextPage")) {
+        page++;
+        if (page > finalPageIndex) {
+          nextGameState = "menu";
+          page = 0;
+        }
       }
     }
   }
@@ -358,6 +370,56 @@ class Game {
       text("Player 1 Mutations:", 20, 200);
       mutations(secsRunning, 0, mouse);
     } else if (gameState.equals("tutorial")) {
+      color col1 = color(255, 255, 240);
+      color col2 = color(240, 255, 255);
+      background(lerpColor(col1, col2, sin(secsRunning * 2.5f)));
+
+      textAlign(CENTER);
+
+      fill(0);
+      textSize(72);
+      text("Space Crafting", width/2, 80);
+
+      String header = "";
+      String textContent ="";
+
+      if (page == 0) {
+        header = "Spaceship Creation";
+        textContent = "Use the editor to place\ndown different types of components\nusing the money you have.\nBe strategic!";
+      } else if (page == 1) {
+        header = "Game Field";
+        textContent = "This is the actual game field.\nWatch as your ship and the enemy\nship battle one another on the board.";
+      } else if (page == 2) {
+        header = "Mutation";
+        textContent = "After every round, both\nspaceships will mutate into something\nslightly different to make\nthe game more exciting!";
+      } else if (page == 3) {
+        header = "Final Notes";
+        textContent = "Whoever won the most rounds\nis the winner. Remember,\n HAVE FUN!";
+      } else {
+        header = "Default Page";
+        textContent = "You've hit a\ndefault page!";
+      }
+
+      fill(50);
+      textSize(58);
+      text(header, width/2, 140);
+
+      //Maybe add an image here?
+
+      fill(100);
+      textSize(32);
+      text(textContent, width/2, height/2 - 150);
+
+      textAlign(CORNER);
+
+      fill(0);
+      textSize(48);
+      text("Page #" + (page + 1), 10, height-20);
+
+      tutorialNext.update(secsRunning, dt);
+      tutorialNext.display(secsRunning, dt);
+
+      textAlign(CORNER);
     } else {
       background(255);
       fill(255);
