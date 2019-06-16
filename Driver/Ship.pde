@@ -102,6 +102,5 @@ class Ship extends GameObject {
   }
   
   public void reflect() {
-    
   }
 }
