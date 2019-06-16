@@ -57,7 +57,6 @@ class World {
       if (r.getPosition().x <= -35 || r.getPosition().x >= width - 2 || r.getPosition().y <= 1 || r.getPosition().y >=width - 21) {
         world.getRockets().remove(r);
       }
-      println(world.getRockets());
     }
   }
 

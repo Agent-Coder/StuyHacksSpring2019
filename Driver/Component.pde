@@ -94,4 +94,10 @@ abstract class Component extends GameObject{
       rect (getPosition().x+2, getPosition().y+2, (health/baseHealth)*15, 7);
     }
   }
+  
+  public void checkDead() {
+    if (getHealth() <= 0) {
+      ship.getComponents().remove(this);
+    }
+  }
 }
