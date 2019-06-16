@@ -1,5 +1,12 @@
 class Shield extends Component {
   private float defense;
+  
+  public Component copy() {
+    Shield temp = new Shield(getShip(), getPosition(), getVelocity(), getMaxVelocity(), getAcceleration(), getHitBoxes());
+    temp.defense = defense;
+    return temp;
+  }
+  
   public Shield(Ship ship, PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitBoxes) {
     super(ship, position, velocity, maxVelocity, acceleration, hitBoxes, float((int)random(0, 5) * 5 + 10), 0.0);
     defense=float((int)random(0, 5) * 5 + 10);

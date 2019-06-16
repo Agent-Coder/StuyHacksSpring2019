@@ -29,7 +29,7 @@ class Ship extends GameObject {
     enemyShip = s.enemyShip;
 
     for (Component c : s.components) {
-      components.add(c);
+      components.add(c.copy());
     }
 
 

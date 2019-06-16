@@ -3,6 +3,12 @@ class LaserShooter extends Component {
   float attack;
   Laser laser;
   int frames;
+  
+  public Component copy() {
+    LaserShooter temp = new LaserShooter(getShip(), getPosition(), getVelocity(), getMaxVelocity(), getAcceleration(), getHitBoxes(), getHealth(), getCoolDown(), accuracy, attack);
+    temp.frames = frames;
+    return temp;
+  }
 
   public LaserShooter(Ship ship, PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitBoxes, float health, float coolDown, float accuracy, float attack) {
     super(ship, position, velocity, maxVelocity, acceleration, hitBoxes, health, coolDown);
