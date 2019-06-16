@@ -87,7 +87,7 @@ abstract class Component extends GameObject{
   }
   
   public void displayHealth(float secsPassed, float dt) {
-    fill(127);
+    fill(255,0,0);
     rect(getPosition().x+2, getPosition().y+2, 15, 7);
     if (health >= 0) {
       fill (0,255,0);

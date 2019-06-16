@@ -1,6 +1,3 @@
-public Rect mouse;
-public Ship[] ships;
-public World world;
 
 public PFont gameFont;
 
@@ -20,7 +17,7 @@ class Game {
 
   private Button[] menuButtons;
   private Button tutorialNext;
-  private Button[] mutationButton;
+
   public Game() {
     ships = new Ship[2];
     money=100;
@@ -34,10 +31,6 @@ class Game {
     menuButtons = new Button[2];
     menuButtons[0] = new Button(new PVector(width/2 - 180, height/2-100), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(360, 160))}, "Play", 100, "play");
     menuButtons[1] = new Button(new PVector(width/2 - 180, height/2+100), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(360, 130))}, "Guide", 100, "guide");
-
-    mutationButton=new Button[2];
-    mutationButton[0]=new Button(new PVector(60, 280), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(100, 20))}, "Undo", 14, "Undo");
-    mutationButton[1] = new Button(new PVector(width-100, height-90), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(80, 80))}, "Next", 28, "Go");
 
     tutorialNext = new Button(new PVector(width - 125, height - 125), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(120, 120))}, "->", 100, "nextPage");
 
@@ -76,8 +69,7 @@ class Game {
         } else {
           ships[0].setPosition(new PVector(100, 300));
           ships[1].setPosition(new PVector(500, 300));
-          nextGameState = "mutating";
-          //change back
+          nextGameState = "game";
         }
       }
     } else if (gameState.equals("menu")) {
@@ -97,14 +89,6 @@ class Game {
     } else if (gameState.equals("animation")) {
       if (buttonText.equals("next")) {
         nextGameState = "mutating";
-      }
-    } else if (gameState.equals("mutating")) {
-      if (buttonText.equals("Undo")) {
-        println(tempShips[0].getComponents() + ", " + startingSize);
-        if (tempShips[0].getComponents().size()>startingSize) {
-          placed=false;
-          tempShips[0].getComponents().remove(tempShips[0].getComponents().size()-1);
-        }
       }
     }
   }
@@ -223,8 +207,8 @@ class Game {
           new Rect(new PVector(0, 0), new PVector(20, 20))
           });
       } else if (selected.equals("rocket")) {
-        newComp = new RocketShooter(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector (0, 0), new Rect[] {
-          new Rect(new PVector(0, 0), new PVector(40, 20))}, 3, 2, 1.0
+        newComp = new RocketShooter(ship, new PVector(x,y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0,0), new PVector (0,0), new Rect[] {
+          new Rect(new PVector(0,0), new PVector(40, 20))}, 3, 2, 1.0
           );
       }
       if (newComp != null && mouse.collides(gridBounds)) {
@@ -246,7 +230,7 @@ class Game {
     if (placeable) {
       //println("yes");
       boolean tangent = false;
-      //println(comp + ", " + newComp);
+      println(comp + ", " + newComp);
       for (Component c : comp) {
         if (c != newComp) {
           //println(gridBounds.contains(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()))));
@@ -267,7 +251,6 @@ class Game {
       if (mousePressed && tangent&&placeable) {
         newComp = null;
         selected = "";
-        return true;
       }
     }
     if (ship.getComponents().get(ship.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
@@ -280,10 +263,7 @@ class Game {
 
   Ship[] tempShips = new Ship[3];
   boolean otherFirstMut = true;
-  boolean placed=false;
-  int startingSize=0;
-  int upgrade;
-  float mutationFac;
+
   public void mutations(float secsRun, int shipnum, Rect mice) {
     Rect choice1= new Rect(new PVector(-1, 299.0), new PVector( 221.0, 521.0));
     Rect choice2= new Rect(new PVector(220.0, 280.0), new PVector( 480.0, 540.0));
@@ -308,8 +288,6 @@ class Game {
       otherFirstMut = false;
       for (int i = 0; i < tempShips.length; i++) {
         tempShips[i] = null;
-        upgrade=(int)random(0,ship.getComponents().size());
-        mutationFac=random(0,1);
       }
     }
 
@@ -319,33 +297,24 @@ class Game {
       }
     }
 
-    if (firstMut) {
-      firstMut=false;
-      startingSize=ship.getComponents().size();
-      //reset to true after selected
-      shape=(int)random(0, 3); //use arrays
-    }
-
     for (int i = 0; i < tempShips.length; i++) {
       Ship copy = tempShips[i];
       copy.setPosition(new PVector(60.0 + i * 240, 360.0));
       ship=copy;
-      if (!placed&&i==0) {
-        if (shape==0) {
-          selected="laser";
-        } else if (shape==1) {
-          selected="crew";
-        } else {
-          selected="shield";
-        }
-        if (i == 0) {
-          placed=mutationAdd(choice1); //use arrays
-        }
+      if (firstMut) {
+        firstMut=false;
+        //reset to true after selected
+        shape=(int)random(0, 3); //use arrays
       }
-      else if(i==1){
-        println(upgrade);
-        ships[i].getComponents().get(upgrade).mutate(mutationFac);
-        
+      if (shape==0) {
+        selected="laser";
+      } else if (shape==1) {
+        selected="crew";
+      } else {
+        selected="shield";
+      }
+      if (i == 0) {
+        mutationAdd(choice1); //use arrays
       }
       copy.display(secsRun, dt);
     }
@@ -408,7 +377,7 @@ class Game {
           ship.display(secsRunning, dt);
         }
       } else {
-        //println(numLevels);
+        println(numLevels);
         if (numLevels >= 9) {
           nextGameState = "end";
         } else {
@@ -420,18 +389,13 @@ class Game {
       background(255);
       textSize(50);
       fill(255, 200, 0);
-      text("Player 1 Won!", 325, 50);
+      text("Player 1 Won!", 175, 50);
       textSize(30);
       text("5-4", 325, 100);
       fill(10, 10, 200);
-      text("Player 1 Mutations:", 175, 150);
+      text("Player 1 Mutations:", 20, 200);
       mutations(secsRunning, 0, mouse);
-      for (Button b : mutationButton) {
-        b.update(secsRunning, dt);
-      }
-      for (Button b : mutationButton) {
-        b.display(secsRunning, dt);
-      }
+      delay(1000);
     } else if (gameState.equals("tutorial")) {
       color col1 = color(255, 255, 240);
       color col2 = color(240, 255, 255);
