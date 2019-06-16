@@ -10,7 +10,8 @@ class Game {
   private String selected;
   private int gridSize = 20;
   public int money;
-
+  public boolean firstMut;
+  public int shape;
   LaserShooter l;
 
   public Game() {
@@ -32,7 +33,7 @@ class Game {
     gameState ="editor";
     nextGameState = gameState;
     selected="";
-
+    firstMut=true;
     ship = ships[0];
   }
 
@@ -192,9 +193,8 @@ class Game {
           Rect newTranslated = new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()));
           println(cTranslated.getIntersectPoints(newTranslated));
           if (cTranslated.getIntersectPoints(newTranslated) >= 2) {
-            println("yes1");
             tangent = true;
-          }else{println("no1");}
+          }
 
           if (c != newComp && cTranslated.collides(newTranslated) || !gridBounds.contains(newTranslated)) {
             placeable = false;
@@ -223,9 +223,9 @@ class Game {
     
   }
   public void mutations(float secsRun, int shipnum, Rect mice) {
-    Rect choice1= new Rect(new PVector(0.0, 300.0), new PVector( 220.0, 520.0));
-    Rect choice2= new Rect(new PVector(240.0, 300.0), new PVector( 460.0, 520.0));
-    Rect choice3= new Rect(new PVector(480.0, 300.0), new PVector( 700.0, 520.0));
+    Rect choice1= new Rect(new PVector(-20.0, 280.0), new PVector( 240.0, 540.0));
+    Rect choice2= new Rect(new PVector(220.0, 280.0), new PVector( 480.0, 540.0));
+    Rect choice3= new Rect(new PVector(440.0, 280.0), new PVector( 720.0, 540.0));
 
     if (mice.collides(choice1)) {
       fill(100, 200, 200);
@@ -248,12 +248,17 @@ class Game {
     ships[shipnum].display(secsRun, dt);
     ships[shipnum].setPosition(new PVector(540.0, 360.0));
     ships[shipnum].display(secsRun, dt);
+    ship=ships[0];
     if (rand==0) {
-      rand=(int)random(0, 3);
-      if (rand==0) {
+      if(firstMut){
+        firstMut=false;
+        //reset to true after selected
+      shape=(int)random(0, 3);
+      }
+      if (shape==0) {
         selected="laser";
         mutationAdd(choice1);
-      } else if (rand==1) {
+      } else if (shape==1) {
         selected="crew";
          mutationAdd(choice1);
       } else {
