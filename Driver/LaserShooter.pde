@@ -35,7 +35,7 @@ class LaserShooter extends Component {
       setCoolDown(getBaseCoolDown());
       PVector rocketVel = getShip().getEnemyShip().getPosition().sub(getPosition().add(getShip().getPosition()));
       rocketVel.normalize().mult(10);
-      Rocket r = new Rocket(getPosition().add(getShip().getPosition()), rocketVel, rocketVel, rocketVel.normalize(), new Rect[] {new Rect(new PVector(0, 0), new PVector(20, 10))}, getShip(), attack);
+      Rocket r = new Rocket(getPosition().add(getShip().getPosition()), rocketVel.mult(60), rocketVel.mult(60), rocketVel.normalize(), new Rect[] {new Rect(new PVector(0, 0), new PVector(20, 10))}, getShip(), attack);
       world.rockets.add(r);
     }
   }
@@ -54,9 +54,7 @@ class Laser extends GameObject{
   } 
   
   void update(float secsPassed, float dt){
-    setAcceleration(enemy.getPosition().sub(getPosition()));
     applyVelocity();
-    
   }
   
   Ship getShip() {
