@@ -21,9 +21,9 @@ class Game {
     buttons[1] = new Button(new PVector(160, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Shield", 32, "shield");
     buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew", 32, "crew");
     buttons[3] = new Button(new PVector(width-100, height-90), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(80, 80))}, "Next", 32, "Go");
-    
+
     ships[0] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
-    ships[1] = new Ship(new PVector(500, 500), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
+    ships[1] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(5, 5), new PVector(0, 0));
     ships[0].setEnemyShip(ships[1]);
     ships[1].setEnemyShip(ships[0]);
 
@@ -32,6 +32,8 @@ class Game {
     gameState = "editor";
     nextGameState = gameState;
     selected="";
+    
+    ship = ships[0];
   }
 
   void buttonPressedOnce(String buttonText) { //sends signal when first pressed
@@ -41,6 +43,14 @@ class Game {
       ship.getComponents().get(ship.getComponents().size()-1);
     }
     newComp = null;
+    if (buttonText.equals("Go")) {
+      if (ship == ships[0]) {
+        ship = ships[1];
+        money=100;
+      } else {
+        nextGameState = "game";
+      }
+    }
   }
   void buttonPressed(String buttonText) { //sends signal while pressed
   }
@@ -61,7 +71,7 @@ class Game {
   Component newComp = null;
   Ship ship = null;
 
-  boolean shadowGrid(Ship s) {
+  boolean shadowGrid() {
     fill(200, 200, 200);
     Rect gridBounds = new Rect(new PVector(-1, 99), new PVector(width+1, height - 99));
 
@@ -72,29 +82,29 @@ class Game {
 
     if (newComp == null) {
       if (selected.equals("laser")) {
-        newComp = new LaserShooter(s, new PVector(x, y).sub(s.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
+        newComp = new LaserShooter(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 20))
           }, 20, 1, 0, 1);
       } else if (selected.equals("shield")) {
-        newComp = new Shield(s, new PVector(x, y).sub(s.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
+        newComp = new Shield(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 40))
           });
       } else if (selected.equals("crew")) {
-        newComp = new Crew(s, new PVector(x, y).sub(s.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
+        newComp = new Crew(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(20, 20))
           });
       }
       if (newComp != null && mouse.collides(gridBounds)) {
-        s.addComponent(newComp);
+        ship.addComponent(newComp);
       }
     } else {
-      if (s.getComponents().get(s.getComponents().size()-1) != newComp && mouse.collides(gridBounds)) {
-        s.addComponent(newComp);
+      if (ship.getComponents().get(ship.getComponents().size()-1) != newComp && mouse.collides(gridBounds)) {
+        ship.addComponent(newComp);
       } else {
-        newComp.setPosition(new PVector(x, y).sub(s.getPosition()));
+        newComp.setPosition(new PVector(x, y).sub(ship.getPosition()));
       }
     }
-        
+
     List<Component> comp=ship.getComponents();
     boolean placeable=mouse.collides(gridBounds) && newComp != null;
     if (placeable) {
@@ -102,26 +112,37 @@ class Game {
       for (Component c : comp) {
         if (c != newComp) {
           //println(gridBounds.contains(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()))));
-          
+
           Rect cTranslated = new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition()));
           Rect newTranslated = new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()));
-                    
+
           if (cTranslated.getIntersectPoints(newTranslated) >= 2) {
             tangent = true;
           }
-          
+
           if (c != newComp && cTranslated.collides(newTranslated) || !gridBounds.contains(newTranslated)) {
             placeable = false;
           }
         }
       }
-      if(mousePressed && tangent){
-        newComp=null;
-        selected="";
+      if (mousePressed && tangent) {
+        if (selected.equals("laser")&&money-25>=0) {
+          money-=25;
+          newComp=null;
+          selected="";
+        } else if (selected.equals("shield")&&money-20>=0) {
+          money-=20;
+          newComp=null;
+          selected="";
+        } else if (selected.equals("crew")&&money-10>=0) {
+          money-=10;
+          newComp=null;
+          selected="";
+        }
       }
     }
-    if (s.getComponents().get(s.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
-      s.getComponents().remove(s.getComponents().size()-1);
+    if (ship.getComponents().get(ship.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
+      ship.getComponents().remove(ship.getComponents().size()-1);
       newComp = null;
     }
     fill(0, 0, 0);
@@ -135,19 +156,18 @@ class Game {
     } else if (gameState.equals("editor")) {
       background(255);
       drawGrid(0, 100, width, height-100);
-      fill(0,255,255);
-      rect(0, 600, 100,100);
-      fill(50,180,50);
-      text("$"+str(money),50,height-50);
+      fill(0, 255, 255);
+      rect(0, 600, 100, 100);
+      fill(50, 180, 50);
+      text("$"+str(money), 50, height-50);
       for (Button b : buttons) {
         b.update(secsRunning, dt);
       }
       for (Button b : buttons) {
         b.display(secsRunning, dt);
       }
-      ship = ships[0];
-      shadowGrid(ships[0]);
-      ships[0].display(secsRunning, dt);
+      shadowGrid();
+      ship.display(secsRunning, dt);
     } else if (gameState.equals("game")) {
       background(255);
       world.update(secsRunning, dt);
