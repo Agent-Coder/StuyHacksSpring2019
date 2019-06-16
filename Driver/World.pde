@@ -5,7 +5,7 @@ class World {
 
   private float fuelSpawnCoolDown;
   private float baseFuelSpawnCoolDown;
-
+  
   public World(float fuelSpawnCoolDown) {
     this.fuels = new ArrayList<Fuel>();
     this.baseFuelSpawnCoolDown = this.fuelSpawnCoolDown = fuelSpawnCoolDown;

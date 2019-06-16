@@ -9,12 +9,13 @@ class Game {
   private String nextGameState;
   private String selected;
   private int gridSize = 20;
+  public int money;
 
   LaserShooter l;
 
   public Game() {
     ships = new Ship[2];
-
+    money=100;
     buttons = new Button[4];
     buttons[0] = new Button(new PVector(10, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Laser", 32, "laser");
     buttons[1] = new Button(new PVector(160, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Shield", 32, "shield");
@@ -80,7 +81,7 @@ class Game {
           });
       } else if (selected.equals("crew")) {
         newComp = new Crew(s, new PVector(x, y).sub(s.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
-          new Rect(new PVector(0, 0), new PVector(60, 20))
+          new Rect(new PVector(0, 0), new PVector(20, 20))
           });
       }
       if (newComp != null && mouse.collides(gridBounds)) {
@@ -130,12 +131,14 @@ class Game {
   public void update(float secsRunning, float dt) {
 
     mouse = new Rect(new PVector(mouseX, mouseY), new PVector(mouseX, mouseY));
-
     if (gameState.equals("menu")) {
     } else if (gameState.equals("editor")) {
       background(255);
       drawGrid(0, 100, width, height-100);
-      //square(300, 300, 100);
+      fill(0,255,255);
+      rect(0, 600, 100,100);
+      fill(50,180,50);
+      text("$"+str(money),50,height-50);
       for (Button b : buttons) {
         b.update(secsRunning, dt);
       }
@@ -159,8 +162,6 @@ class Game {
     } else {
       background(255);
       fill(255);
-      //l.update(secsRunning, dt);
-      //l.display(secsRunning, dt);
       text("You messed up lmao", width/2, height/2);
     }
     gameState = nextGameState;
