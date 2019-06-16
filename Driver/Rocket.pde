@@ -6,6 +6,7 @@ class Rocket extends GameObject{
     ship = s;
     enemy = ship.getEnemyShip();
     this.damage = damage;
+    println(damage);
   } 
   
   void update(float secsPassed, float dt){

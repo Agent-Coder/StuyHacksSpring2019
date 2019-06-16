@@ -211,7 +211,7 @@ class Game {
           });
       } else if (selected.equals("rocket")) {
         newComp = new RocketShooter(ship, new PVector(x,y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0,0), new PVector (0,0), new Rect[] {
-          new Rect(new PVector(0,0), new PVector(40, 20))}, 20, 2, 20
+          new Rect(new PVector(0,0), new PVector(40, 20))}, 20, 2, 10
           );
       }
       if (newComp != null && mouse.collides(gridBounds)) {

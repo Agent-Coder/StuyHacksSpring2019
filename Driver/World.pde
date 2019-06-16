@@ -38,6 +38,7 @@ class World {
       genPoint();
     }
     for (int i = 0; i < rockets.size(); i++) {
+      println(rockets.size());
       Rocket r = rockets.get(i);
       r.update(secs, dt);
       boolean isDone = false;
