@@ -2,6 +2,8 @@ public Rect mouse;
 public Ship[] ships;
 public World world;
 
+public PFont gameFont;
+
 class Game {
 
   private Button[] buttons;
@@ -14,6 +16,9 @@ class Game {
   public int shape;
   LaserShooter l;
 
+  private Button[] menuButtons;
+  private Button tutorialNext;
+
   public Game() {
     ships = new Ship[2];
     money=100;
@@ -23,6 +28,12 @@ class Game {
     buttons[2] = new Button(new PVector(310, 10), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(130, 80))}, "Crew", 32, "crew");
     buttons[3] = new Button(new PVector(width-100, height-90), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(80, 80))}, "Next", 32, "Go");
 
+    menuButtons = new Button[2];
+    menuButtons[0] = new Button(new PVector(width/2 - 180, height/2-100), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(360, 160))}, "Play", 100, "play");
+    menuButtons[1] = new Button(new PVector(width/2 - 180, height/2+100), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(360, 130))}, "Guide", 100, "guide");
+
+    tutorialNext = new Button(new PVector(width - 125, height - 125), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(120, 120))}, "->", 100, "nextPage");
+
     ships[0] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(2, 2), new PVector(0, 0), 1);
     ships[1] = new Ship(new PVector(300, 300), new PVector(0, 0), new PVector(2, 2), new PVector(0, 0), 1);
     ships[0].setEnemyShip(ships[1]);
@@ -30,26 +41,48 @@ class Game {
 
     world = new World(3);
 
-    gameState ="editor";
+    gameState = "menu";
     nextGameState = gameState;
     selected="";
+
+    gameFont = createFont("INVASION2000.TTF", 100);
+    textFont(gameFont);
     firstMut=true;
     ship = ships[0];
   }
 
+  int page = 0;
+  int finalPageIndex = 3;
+
   void buttonPressedOnce(String buttonText) { //sends signal when first pressed
     println("Button " + buttonText + " was pressed.");
-    selected=buttonText;
-    if (ship.getComponents().get(ship.getComponents().size() - 1) == newComp) {
-      ship.getComponents().get(ship.getComponents().size()-1);
-    }
-    newComp = null;
-    if (buttonText.equals("Go")) {
-      if (ship == ships[0]) {
-        ship = ships[1];
-        money=100;
-      } else {
-        nextGameState = "mutating";
+    if (gameState.equals("editor")) {
+      selected=buttonText;
+      if (ship.getComponents().get(ship.getComponents().size() - 1) == newComp) {
+        ship.getComponents().get(ship.getComponents().size()-1);
+      }
+      newComp = null;
+      if (buttonText.equals("Go")) {
+        if (ship == ships[0]) {
+          ship = ships[1];
+          money=100;
+        } else {
+          nextGameState = "mutating";
+        }
+      }
+    } else if (gameState.equals("menu")) {
+      if (buttonText.equals("play")) {
+        nextGameState = "editor";
+      } else if (buttonText.equals("guide")) {
+        nextGameState = "tutorial";
+      }
+    } else if (gameState.equals("tutorial")) {
+      if (buttonText.equals("nextPage")) {
+        page++;
+        if (page > finalPageIndex) {
+          nextGameState = "menu";
+          page = 0;
+        }
       }
     }
   }
@@ -126,20 +159,16 @@ class Game {
           }
         }
       }
-      if (mousePressed && tangent&&placeable) {
+      if (mousePressed && tangent && placeable) {
         if (selected.equals("laser")&&money-25>=0) {
           money-=25;
-          newComp=null;
-          selected="";
         } else if (selected.equals("shield")&&money-20>=0) {
           money-=20;
-          newComp=null;
-          selected="";
         } else if (selected.equals("crew")&&money-10>=0) {
           money-=10;
-          newComp=null;
-          selected="";
         }
+        newComp=null;
+        selected="";
       }
     }
     if (ship.getComponents().get(ship.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
@@ -188,12 +217,11 @@ class Game {
       println(comp + ", " + newComp);
       for (Component c : comp) {
         if (c != newComp) {
-          //println(gridBounds.contains(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()))));
 
           Rect cTranslated = new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition()));
           Rect newTranslated = new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()));
 
-          println(cTranslated.getIntersectPoints(newTranslated));
+          //println(cTranslated.getIntersectPoints(newTranslated));
           if (cTranslated.getIntersectPoints(newTranslated) >= 2) {
             tangent = true;
           }
@@ -242,7 +270,7 @@ class Game {
     if (otherFirstMut) {
       otherFirstMut = false;
       for (int i = 0; i < tempShips.length; i++) {
-          tempShips[i] = null;
+        tempShips[i] = null;
       }
     }
 
@@ -278,6 +306,33 @@ class Game {
 
     mouse = new Rect(new PVector(mouseX, mouseY), new PVector(mouseX, mouseY));
     if (gameState.equals("menu")) {
+      color col1 = color(255, 255, 240);
+      color col2 = color(240, 255, 255);
+      background(lerpColor(col1, col2, sin(secsRunning * 2.5f)));
+
+      textAlign(CENTER);
+
+      fill(0);
+      textSize(72);
+      text("Space Crafting", width/2, 80);
+
+      fill(127);
+      textSize(32);
+      text("Make your own spaceship and battle\nit against a friend's!\nWatch as it changes over time.", width/2, 130);
+
+      for (Button b : menuButtons) {
+        b.update(secsRunning, dt);
+      }
+
+      for (Button b : menuButtons) {
+        b.display(secsRunning, dt);
+      }
+
+      textSize(30);
+      fill(220, 40, 40);
+      text("Made by Greg Zborovsky, George Zhou,\nAmanda Zheng, Vivian Huynh", width/2, height - 60);
+
+      textAlign(CORNER);
     } else if (gameState.equals("editor")) {
       background(255);
       drawGrid(0, 100, width, height-100);
@@ -313,6 +368,57 @@ class Game {
       fill(10, 10, 200);
       text("Player 1 Mutations:", 20, 200);
       mutations(secsRunning, 0, mouse);
+    } else if (gameState.equals("tutorial")) {
+      color col1 = color(255, 255, 240);
+      color col2 = color(240, 255, 255);
+      background(lerpColor(col1, col2, sin(secsRunning * 2.5f)));
+
+      textAlign(CENTER);
+
+      fill(0);
+      textSize(72);
+      text("Space Crafting", width/2, 80);
+
+      String header = "";
+      String textContent ="";
+
+      if (page == 0) {
+        header = "Spaceship Creation";
+        textContent = "Use the editor to place\ndown different types of components\nusing the money you have.\nBe strategic!";
+      } else if (page == 1) {
+        header = "Game Field";
+        textContent = "This is the actual game field.\nWatch as your ship and the enemy\nship battle one another on the board.";
+      } else if (page == 2) {
+        header = "Mutation";
+        textContent = "After every round, both\nspaceships will mutate into something\nslightly different to make\nthe game more exciting!";
+      } else if (page == 3) {
+        header = "Final Notes";
+        textContent = "Whoever won the most rounds\nis the winner. Remember,\n HAVE FUN!";
+      } else {
+        header = "Default Page";
+        textContent = "You've hit a\ndefault page!";
+      }
+
+      fill(50);
+      textSize(58);
+      text(header, width/2, 140);
+
+      //Maybe add an image here?
+
+      fill(100);
+      textSize(32);
+      text(textContent, width/2, height/2 - 150);
+
+      textAlign(CORNER);
+
+      fill(0);
+      textSize(48);
+      text("Page #" + (page + 1), 10, height-20);
+
+      tutorialNext.update(secsRunning, dt);
+      tutorialNext.display(secsRunning, dt);
+
+      textAlign(CORNER);
     } else {
       background(255);
       fill(255);
