@@ -33,4 +33,8 @@ class Rocket extends GameObject{
     rect(0, 0, getHitBoxes()[0].width(), getHitBoxes()[0].height(), 0, getHitBoxes()[0].height() / 2, getHitBoxes()[0].width() / 2, 0);
     popMatrix();
   }
+  
+  String toString() {
+    return "rocket";
+  }
 }

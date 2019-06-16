@@ -28,11 +28,14 @@ class Crew extends Component {
       List<Component> comp=getShip().getComponents();
       for (Component c : comp){
         c.setHealth(getHealth()+crew);
+        if (c.getHealth() >= c.getBaseHealth()) {
+          c.setHealth(c.getBaseHealth());
+        }
       } 
     }
   }
   void display(float secsPassed, float dt) {
-    fill(0, 255, 0);
+    fill(255, 128, 0);
     rect(getPosition().x, getPosition().y, 20, 20);
   }
   public void reset(){

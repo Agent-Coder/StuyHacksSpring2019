@@ -55,7 +55,7 @@ class Ship extends GameObject {
       c.update(secsPassed, dt);
     }
     if (fuel >= 0) {
-      fuel -= 0.1 * dt;
+      fuel -= 0.2 * dt;
       setMaxVelocity(new PVector(2, 2));
     } else {
       setMaxVelocity(new PVector(1, 1));
@@ -151,6 +151,7 @@ class Ship extends GameObject {
     for (int i = 0; i < components.size(); i++) {
       Component c = components.get(i);
       c.display(secsPassed, dt);
+      c.displayHealth(secsPassed, dt);
     }
     popMatrix();
   }

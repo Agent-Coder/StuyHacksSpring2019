@@ -42,7 +42,7 @@ class Game {
     ships[0].setEnemyShip(ships[1]);
     ships[1].setEnemyShip(ships[0]);
 
-    world = new World(3, 3);
+    world = new World(3, 1);
 
     gameState = "menu";
     nextGameState = gameState;
@@ -139,7 +139,7 @@ class Game {
       } else if (selected.equals("rocket")) {
         newComp = new RocketShooter(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 20))
-          }, 20, 2, 10);
+          }, 3, 2, 1.0);
       }
       if (newComp != null && mouse.collides(gridBounds)) {
         ship.addComponent(newComp);
@@ -211,7 +211,7 @@ class Game {
           });
       } else if (selected.equals("rocket")) {
         newComp = new RocketShooter(ship, new PVector(x,y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0,0), new PVector (0,0), new Rect[] {
-          new Rect(new PVector(0,0), new PVector(40, 20))}, 20, 2, 10
+          new Rect(new PVector(0,0), new PVector(40, 20))}, 3, 2, 1.0
           );
       }
       if (newComp != null && mouse.collides(gridBounds)) {
@@ -241,7 +241,7 @@ class Game {
           Rect cTranslated = new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition()));
           Rect newTranslated = new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()));
 
-          println(cTranslated.getIntersectPoints(newTranslated));
+          //println(cTranslated.getIntersectPoints(newTranslated));
           if (cTranslated.getIntersectPoints(newTranslated) >= 2) {
             tangent = true;
           }
@@ -380,13 +380,14 @@ class Game {
           ship.display(secsRunning, dt);
         }
       } else {
+        println(numLevels);
         if (numLevels >= 9) {
           nextGameState = "end";
         } else {
           nextGameState = "mutating";
         }
+        numLevels++;
       }
-      numLevels++;
     } else if (gameState.equals("mutating")) {
       background(255);
       textSize(50);
@@ -397,6 +398,7 @@ class Game {
       fill(10, 10, 200);
       text("Player 1 Mutations:", 20, 200);
       mutations(secsRunning, 0, mouse);
+      delay(1000);
     } else if (gameState.equals("tutorial")) {
       color col1 = color(255, 255, 240);
       color col2 = color(240, 255, 255);

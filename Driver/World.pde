@@ -37,8 +37,8 @@ class World {
       pointSpawnCoolDown = basePointSpawnCoolDown;
       genPoint();
     }
-    for (int i = 0; i < rockets.size(); i++) {
-      println(rockets.size());
+    for (int i = rockets.size() - 1; i >= 0; i--) {
+      //println(rockets.size());
       Rocket r = rockets.get(i);
       r.update(secs, dt);
       boolean isDone = false;
@@ -50,11 +50,14 @@ class World {
         Rect transHR = new Rect(hR, r.getPosition());
         if (transHC.collides(transHR)) {
           c.addHealth(-1 * r.getDam());
-          world.getRockets().remove(this);
-          i--;
+          world.getRockets().remove(r);
           isDone = true;
         }
       }
+      if (r.getPosition().x <= -35 || r.getPosition().x >= width - 2 || r.getPosition().y <= 1 || r.getPosition().y >=width - 21) {
+        world.getRockets().remove(r);
+      }
+      println(world.getRockets());
     }
   }
 

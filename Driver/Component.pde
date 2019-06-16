@@ -5,6 +5,7 @@ abstract class Component extends GameObject{
   private float coolDown;
   private float baseCoolDown;
   
+  
   private Ship ship;
   public Component(Ship ship, PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitBoxes, float health, float coolDown) {
     super(position, velocity, maxVelocity, acceleration, hitBoxes);
@@ -83,5 +84,14 @@ abstract class Component extends GameObject{
   
   public Ship getShip() {
     return ship;
+  }
+  
+  public void displayHealth(float secsPassed, float dt) {
+    fill(127);
+    rect(getPosition().x+2, getPosition().y+2, 15, 7);
+    if (health >= 0) {
+      fill (0,255,0);
+      rect (getPosition().x+2, getPosition().y+2, (health/baseHealth)*15, 7);
+    }
   }
 }
