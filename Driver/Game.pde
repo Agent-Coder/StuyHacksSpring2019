@@ -104,7 +104,7 @@ class Game {
         newComp = new Crew(s, new PVector(x, y).sub(s.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(20, 20))
           });
-      }m
+      }
       if (newComp != null && mouse.collides(gridBounds)) {
         s.addComponent(newComp);
       }
