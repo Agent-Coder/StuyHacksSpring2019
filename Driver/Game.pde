@@ -127,7 +127,7 @@ class Game {
       if (selected.equals("laser")) {
         newComp = new LaserShooter(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 20))
-          }, 20, 1, 0, 1);
+          }, 3, 2, 1.0);
       } else if (selected.equals("shield")) {
         newComp = new Shield(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 40))
@@ -200,7 +200,7 @@ class Game {
       if (selected.equals("laser")) {
         newComp = new LaserShooter(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 20))
-          }, 20, 1, 0, 1);
+          }, 3, 2, 1.0);
       } else if (selected.equals("shield")) {
         newComp = new Shield(ship, new PVector(x, y).sub(ship.getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {
           new Rect(new PVector(0, 0), new PVector(40, 40))
