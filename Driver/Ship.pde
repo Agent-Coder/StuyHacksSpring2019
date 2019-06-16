@@ -5,6 +5,7 @@ class Ship extends GameObject {
   private float fuel;
   private float timeSinceFuelRanOut;
   private PVector baseAcceleration;
+  private Rect boundaries;
 
   public Ship(PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, float nFuel) {
     super(position, velocity, maxVelocity, acceleration, new Rect[0]);
@@ -19,6 +20,7 @@ class Ship extends GameObject {
     timeSinceFuelRanOut = 0;
     components.add(mainBody);
     baseAcceleration = acceleration;
+    
     //LaserShooter l = new LaserShooter(this, new PVector(100, 0),new PVector(0, 0),new PVector(0, 0),new PVector(0, 0),new Rect[]{new Rect(new PVector(0, 0), new PVector(100, 100))},100,5,20,100);
     //components.add(l);
   }
@@ -59,6 +61,7 @@ class Ship extends GameObject {
         }
       }
     }
+    reflect();
     applyAcceleration();
     applyVelocity();
   }
@@ -102,5 +105,35 @@ class Ship extends GameObject {
   }
   
   public void reflect() {
+    boolean isDone = false;
+    for (int i = 0; i < components.size() && !isDone; i++) { //do right or left
+      Component c = components.get(i);
+      if (c.getPosition().x + getPosition().x <= 2 || c.getPosition().x + getPosition().x + c.getHitBoxes()[0].width() >= width - 2) {
+        println(getVelocity().x);
+        setVelocity(new PVector(getVelocity().x * -1, getVelocity().y));
+        setAcceleration(new PVector(getAcceleration().x * -1, getAcceleration().y));
+        isDone = true;
+        if (c.getPosition().x + getPosition().x <= 2) {
+          setPosition(new PVector(2.1, getPosition().y));
+        } else {
+          setPosition(new PVector(width - 2.1 - c.getHitBoxes, getPosition().y));
+        }
+      }
+    }
+    for (int i = 0; i < components.size() && !isDone; i++) { //do right or left
+      Component c = components.get(i);
+      if (c.getPosition().y + getPosition().y <= 2 || c.getPosition().y + getPosition().y + c.getHitBoxes()[0].height() >= height - 2) {
+        println(getVelocity().y);
+        setVelocity(new PVector(getVelocity().x, getVelocity().y * -1));
+        setAcceleration(new PVector(getAcceleration().x, getAcceleration().y *= -1));
+        isDone = true;
+        if (c.getPosition().y + getPosition().y <= 2) {
+          setPosition(new PVector(getPosition().x, 2.1));
+        } else {
+          setPosition(new PVector(getPosition().x, height - 2.1 - c.getHitBoxes()[0].height()));
+        }
+      }
+    }
+    
   }
 }
