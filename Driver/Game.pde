@@ -11,6 +11,8 @@ class Game {
   private String nextGameState;
   private String selected;
   private int gridSize = 20;
+  private int numLevels = 0;
+  private int numNextEditors = 0;
   public int money;
   public boolean firstMut;
   public int shape;
@@ -67,7 +69,9 @@ class Game {
           ship = ships[1];
           money=100;
         } else {
-          nextGameState = "mutating";
+          ships[0].setPosition(new PVector(100, 300));
+          ships[1].setPosition(new PVector(500, 300));
+          nextGameState = "game";
         }
       }
     } else if (gameState.equals("menu")) {
@@ -83,6 +87,10 @@ class Game {
           nextGameState = "menu";
           page = 0;
         }
+      }
+    } else if (gameState.equals("animation")) {
+      if (buttonText.equals("next")) {
+        nextGameState = "mutating";
       }
     }
   }
@@ -351,14 +359,24 @@ class Game {
       ship.display(secsRunning, dt);
     } else if (gameState.equals("game")) {
       background(255);
-      world.update(secsRunning, dt);
-      world.display(secsRunning, dt);
-      for (Ship ship : ships) {
-        ship.update(secsRunning, dt);
+      if (!ships[0].isDead() && !ships[1].isDead() && secsRunning <= 75) {
+        world.update(secsRunning, dt);
+        world.display(secsRunning, dt);
+        for (Ship ship : ships) {
+          println(ship.getComponents().size());
+          ship.update(secsRunning, dt);
+        }
+        for (Ship ship : ships) {
+          ship.display(secsRunning, dt);
+        }
+      } else {
+        if (numLevels >= 9) {
+          nextGameState = "end";
+        } else {
+          nextGameState = "mutating";
+        }
       }
-      for (Ship ship : ships) {
-        ship.display(secsRunning, dt);
-      }
+      numLevels++;
     } else if (gameState.equals("mutating")) {
       background(255);
       textSize(50);
@@ -420,6 +438,7 @@ class Game {
       tutorialNext.display(secsRunning, dt);
 
       textAlign(CORNER);
+    } else if (gameState.equals("end")) {
     } else {
       background(255);
       fill(255);

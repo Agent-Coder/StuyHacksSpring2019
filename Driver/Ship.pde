@@ -100,6 +100,10 @@ class Ship extends GameObject {
   public void removeComponent(Component c) {
     components.remove(c);
   }
+  
+  public boolean isDead() {
+    return mainBody.getHealth() <= 0;
+  }
 
   public Fuel getClosestFuel() {
     List<Fuel> allFuel = world.getFuels();
