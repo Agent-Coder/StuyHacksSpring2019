@@ -1,5 +1,11 @@
 class RocketShooter extends Component {
   float attack;
+  
+  public Component copy() {
+    RocketShooter temp = new RocketShooter(getShip(), getPosition(), getVelocity(), getMaxVelocity(), getAcceleration(), getHitBoxes(), getHealth(), getCoolDown(), attack);
+    return temp;
+  }
+  
   public RocketShooter(Ship ship, PVector position, PVector velocity, PVector maxVelocity, PVector acceleration, Rect[] hitBoxes, float health, float coolDown, float attack) {
     super(ship, position, velocity, maxVelocity, acceleration, hitBoxes, health, coolDown);
     this.attack = attack;

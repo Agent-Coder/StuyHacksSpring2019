@@ -31,7 +31,7 @@ class Ship extends GameObject {
     enemyShip = s.enemyShip;
 
     for (Component c : s.components) {
-      components.add(c);
+      components.add(c.copy());
     }
 
 
@@ -99,7 +99,7 @@ class Ship extends GameObject {
           }
         }
       }
-    } else if (getClosestPoint() != null && getPosition().dist(getClosestPoint().getPosition()) <= 100) {
+    } else if (getClosestPoint() != null && getPosition().dist(getClosestPoint().getPosition()) <= 200) {
       Point closest = getClosestPoint();
       if (closest != null) {
         PVector target = closest.getPosition().sub(getPosition());
@@ -168,6 +168,8 @@ class Ship extends GameObject {
       c.display(secsPassed, dt);
       c.displayHealth(secsPassed, dt);
     }
+    textSize(10);
+    text("Points: " + (int)(getPoints() * 100), 50, 50);
     popMatrix();
   }
 

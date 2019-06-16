@@ -398,7 +398,6 @@ class Game {
       fill(10, 10, 200);
       text("Player 1 Mutations:", 20, 200);
       mutations(secsRunning, 0, mouse);
-      delay(1000);
     } else if (gameState.equals("tutorial")) {
       color col1 = color(255, 255, 240);
       color col2 = color(240, 255, 255);
