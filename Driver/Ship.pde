@@ -48,7 +48,7 @@ class Ship extends GameObject {
     return points;
   }
   public void update(float secsPassed, float dt) {
-    println(mainBody.getHealth());
+    println(getPoints());
     for (int i = 0; i < components.size(); i++) {
       Component c = components.get(i);
       c.checkDead();
@@ -59,6 +59,11 @@ class Ship extends GameObject {
       setMaxVelocity(new PVector(2, 2));
     } else {
       setMaxVelocity(new PVector(1, 1));
+    }
+    if (getPosition().dist(getEnemyShip().getPosition()) <= 150) {
+      setAcceleration(new PVector(0, 0));
+      setVelocity(new PVector(0, 0));
+      setMaxVelocity( new PVector(2, 2));
     }
     if (mainBody.getHealth() <= 0.2) { //TEMP
       setAcceleration(getEnemyShip().getPosition().sub(getPosition()));
@@ -102,7 +107,8 @@ class Ship extends GameObject {
       setAcceleration(getEnemyShip().getPosition().sub(getPosition()));
       setAcceleration(getAcceleration().normalize().mult(0.5));
       setMaxVelocity( new PVector(2, 2));
-      boolean isDone = false;
+    }
+    boolean isDone = false;
       for (int i = 0; i < world.fuels.size() && !isDone; i++) {
         for (int j = 0; j < components.size() && !isDone; j++) {
           Fuel f = world.fuels.get(i);
@@ -119,6 +125,7 @@ class Ship extends GameObject {
           }
         }
       }
+      isDone = false;
       for (int i = 0; i < world.points.size() && !isDone; i++) {
         for (int j = 0; j < components.size() && !isDone; j++) {
           Point p = world.points.get(i);
@@ -130,16 +137,11 @@ class Ship extends GameObject {
           Rect transP = new Rect(hp, p.getPosition());
           if (transC.collides(transP)) {
             points += p.getPointLevel();
-            world.getFuels().remove(p);
+            world.getPoints().remove(p);
             isDone = true;
           }
         }
       }
-    } else if (getPosition().dist(getEnemyShip().getPosition()) <= 200) {
-      setAcceleration(new PVector(0, 0));
-      setVelocity(new PVector(0, 0));
-      setMaxVelocity( new PVector(2, 2));
-    }
     reflect();
     applyAcceleration();
     applyVelocity();

@@ -6,7 +6,6 @@ class Rocket extends GameObject{
     ship = s;
     enemy = ship.getEnemyShip();
     this.damage = damage;
-    println(damage);
   } 
   
   void update(float secsPassed, float dt){
@@ -26,8 +25,10 @@ class Rocket extends GameObject{
   }
   
   void display(float secsPassed, float dt){
+    PVector direct = enemy.getPosition().sub(getPosition());
     pushMatrix();
     translate(getPosition().x , getPosition().y);
+    rotate(direct.heading());
     fill(32, 52, 204);
     rectMode(CORNER);
     rect(0, 0, getHitBoxes()[0].width(), getHitBoxes()[0].height(), 0, getHitBoxes()[0].height() / 2, getHitBoxes()[0].width() / 2, 0);
