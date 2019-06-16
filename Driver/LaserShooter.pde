@@ -35,8 +35,8 @@ class LaserShooter extends Component {
       setCoolDown(getBaseCoolDown());
       PVector rocketVel = getShip().getEnemyShip().getPosition().sub(getPosition().add(getShip().getPosition()));
       rocketVel.normalize().mult(10);
-      Rocket r = new Rocket(getPosition().add(getShip().getPosition()), rocketVel.mult(60), rocketVel.mult(60), rocketVel.normalize(), new Rect[] {new Rect(new PVector(0, 0), new PVector(20, 10))}, getShip(), attack);
-      world.rockets.add(r);
+      Laser l = new Laser(getPosition().add(getShip().getPosition()), rocketVel.mult(60), rocketVel.mult(60), rocketVel.normalize(), new Rect[] {new Rect(new PVector(0, 0), new PVector(20, 10))}, getShip(), attack);
+      world.lasers.add(l);
     }
   }
 }
