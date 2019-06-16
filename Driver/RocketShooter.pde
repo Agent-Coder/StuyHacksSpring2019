@@ -35,6 +35,7 @@ class Rocket extends GameObject{
     super(position,velocity, maxVelocity, acceleration, hitboxes);
     ship = s;
     enemy = ship.getEnemyShip();
+    
   } 
   
   void update(float secsPassed, float dt){

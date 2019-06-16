@@ -5,10 +5,12 @@ class World {
 
   private float fuelSpawnCoolDown;
   private float baseFuelSpawnCoolDown;
+  ArrayList<Rocket> rockets;
 
   public World(float fuelSpawnCoolDown) {
     this.fuels = new ArrayList<Fuel>();
     this.baseFuelSpawnCoolDown = this.fuelSpawnCoolDown = fuelSpawnCoolDown;
+    rockets = new ArrayList<Rocket>();
   }
 
   public void update(float secs, float dt) {
