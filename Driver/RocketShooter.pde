@@ -14,7 +14,11 @@ class RocketShooter extends Component {
   }
   
   void display(float secsPassed, float dt) {
-    fill(32, 52, 204);
+    float percent = (attack)/(5);
+    int rVal = 128;
+    int bVal = 159-51;
+    int gVal = 255-204;
+    fill(128-(percent * rVal), 159 - (percent * bVal), 255 - (percent * gVal));
     rect(getPosition().x, getPosition().y, 40, 20);
   }
   
