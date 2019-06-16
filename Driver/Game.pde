@@ -149,7 +149,7 @@ class Game {
     fill(0, 0, 0);
     return false;
   }
-  boolean mutationAdd(Rect gridBounds){
+  boolean mutationAdd(Rect gridBounds) {
     float x = round(mouseX/gridSize)*gridSize;
     float y = round(mouseY/gridSize)*gridSize;
     if (newComp == null) {
@@ -169,11 +169,11 @@ class Game {
       if (newComp != null && mouse.collides(gridBounds)) {
         //println("yes");
         ship.addComponent(newComp);
-      }else{
+      } else {
         //println("no");
       }
     } else {
-      if (ship.getComponents().get(ship.getComponents().size()-1) != newComp&& mouse.collides(gridBounds)) {
+      if (ship.getComponents().get(ship.getComponents().size()-1) != newComp && mouse.collides(gridBounds)) {
         ship.addComponent(newComp);
       } else {
         newComp.setPosition(new PVector(x, y).sub(ship.getPosition()));
@@ -183,47 +183,44 @@ class Game {
     List<Component> comp=ship.getComponents();
     boolean placeable=mouse.collides(gridBounds) && newComp != null;
     if (placeable) {
-      println("yes");
+      //println("yes");
       boolean tangent = false;
+      println(comp + ", " + newComp);
       for (Component c : comp) {
         if (c != newComp) {
           //println(gridBounds.contains(new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()))));
 
           Rect cTranslated = new Rect(c.getHitBoxes()[0], ship.getPosition().add(c.getPosition()));
           Rect newTranslated = new Rect(newComp.getHitBoxes()[0], ship.getPosition().add(newComp.getPosition()));
+
           println(cTranslated.getIntersectPoints(newTranslated));
           if (cTranslated.getIntersectPoints(newTranslated) >= 2) {
             tangent = true;
           }
 
-          if (c != newComp && cTranslated.collides(newTranslated) || !gridBounds.contains(newTranslated)) {
+          if (cTranslated.collides(newTranslated) || !gridBounds.contains(newTranslated)) {
             placeable = false;
           }
         }
       }
       if (mousePressed && tangent&&placeable) {
-        if (selected.equals("laser")) {
-          newComp=null;
-          selected="";
-        } else if (selected.equals("shield")) {
-          newComp=null;
-          selected="";
-        } else if (selected.equals("crew")) {
-          newComp=null;
-          selected="";
-        }
+        newComp = null;
+        selected = "";
       }
-    }else{println("no");}
+    }
     if (ship.getComponents().get(ship.getComponents().size()-1) == newComp && ((!mouse.collides(gridBounds)) || !placeable)) {
       ship.getComponents().remove(ship.getComponents().size()-1);
       newComp = null;
     }
     fill(0, 0, 0);
     return false;
-    
   }
+
+  Ship[] tempShips = new Ship[3];
+  boolean otherFirstMut = true;
+
   public void mutations(float secsRun, int shipnum, Rect mice) {
-    Rect choice1= new Rect(new PVector(-20.0, 280.0), new PVector( 240.0, 540.0));
+    Rect choice1= new Rect(new PVector(-1, 299.0), new PVector( 221.0, 521.0));
     Rect choice2= new Rect(new PVector(220.0, 280.0), new PVector( 480.0, 540.0));
     Rect choice3= new Rect(new PVector(440.0, 280.0), new PVector( 720.0, 540.0));
 
@@ -241,31 +238,40 @@ class Game {
     drawGrid(0, 300, 220, 520);
     drawGrid(240, 300, 460, 520);
     drawGrid(480, 300, 700, 520);
-    int rand=0;
-    ships[shipnum].setPosition(new PVector(60.0, 360.0));
-    ships[shipnum].display(secsRun, dt);
-    ships[shipnum].setPosition(new PVector(300.0, 360.0));
-    ships[shipnum].display(secsRun, dt);
-    ships[shipnum].setPosition(new PVector(540.0, 360.0));
-    ships[shipnum].display(secsRun, dt);
-    ship=ships[0];
-    if (rand==0) {
-      if(firstMut){
+
+    if (otherFirstMut) {
+      otherFirstMut = false;
+      for (int i = 0; i < tempShips.length; i++) {
+          tempShips[i] = null;
+      }
+    }
+
+    for (int i = 0; i < tempShips.length; i++) {
+      if (tempShips[i] == null) {
+        tempShips[i] = new Ship(ships[shipnum]);
+      }
+    }
+
+    for (int i = 0; i < tempShips.length; i++) {
+      Ship copy = tempShips[i];
+      copy.setPosition(new PVector(60.0 + i * 240, 360.0));
+      ship=copy;
+      if (firstMut) {
         firstMut=false;
         //reset to true after selected
-      shape=(int)random(0, 3);
+        shape=(int)random(0, 3); //use arrays
       }
       if (shape==0) {
         selected="laser";
-        mutationAdd(choice1);
       } else if (shape==1) {
         selected="crew";
-         mutationAdd(choice1);
       } else {
         selected="shield";
-         mutationAdd(choice1);
       }
-      ships[shipnum].display(secsRun, dt);
+      if (i == 0) {
+        mutationAdd(choice1); //use arrays
+      }
+      copy.display(secsRun, dt);
     }
   }
   public void update(float secsRunning, float dt) {
