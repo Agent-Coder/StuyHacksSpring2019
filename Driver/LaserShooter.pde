@@ -39,7 +39,7 @@ class LaserShooter extends Component {
     if (laser != null) {
       laser.display();
     }
-    fill(255, 0, 0);
+    fill(255, 0, 255);
     rect(getPosition().x, getPosition().y, 40, 20);
   }
 

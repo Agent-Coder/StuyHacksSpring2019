@@ -23,7 +23,8 @@ class Shield extends Component {
     setHealth(getBaseHealth());
   };
 
- public void display(float secsPassed, float dt){
-   
-  }
+ void display(float secsPassed, float dt) {
+    fill(255, 255, 0);
+    rect(getPosition().x, getPosition().y, 40, 40);
+ }
 }
