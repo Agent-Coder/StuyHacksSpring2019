@@ -33,9 +33,9 @@ class RocketShooter extends Component {
     if (getCoolDown() <= 0) {
       println("hl");
       setCoolDown(getBaseCoolDown());
-      PVector rocketVel = getShip().getEnemyShip().getPosition().sub(getPosition().add(getShip().getPosition()));
-      rocketVel.normalize().mult(6);
-      Rocket r = new Rocket(getPosition().add(getShip().getPosition()), rocketVel, rocketVel, rocketVel.normalize(), new Rect[] {new Rect(new PVector(0, 0), new PVector(40, 20))}, getShip(), attack);
+      //PVector rocketVel = getShip().getEnemyShip().getPosition().sub(getPosition().add(getShip().getPosition()));
+      //rocketVel.normalize().mult(6);
+      Rocket r = new Rocket(getPosition().add(getShip().getPosition()), new PVector(0, 0), new PVector(0, 0), new PVector(0, 0), new Rect[] {new Rect(new PVector(0, 0), new PVector(40, 20))}, getShip(), attack);
       world.rockets.add(r);
     }
   }

@@ -44,7 +44,7 @@ class Game {
 
     world = new World(3, 1);
 
-    gameState = "mutating";
+    gameState = "menu";
     nextGameState = gameState;
     selected="";
 

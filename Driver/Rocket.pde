@@ -11,7 +11,9 @@ class Rocket extends GameObject{
   } 
   
   void update(float secsPassed, float dt){
-    setAcceleration(enemy.getPosition().sub(getPosition()));
+    println(enemy.getPosition());
+    setAcceleration(enemy.getPosition().sub(getPosition()).normalize().mult(10));
+    applyAcceleration();
     applyVelocity();
     
   }
