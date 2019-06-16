@@ -44,7 +44,7 @@ class Game {
 
     world = new World(3, 1);
 
-    gameState = "end";
+    gameState = "menu";
     nextGameState = gameState;
     selected="";
 
